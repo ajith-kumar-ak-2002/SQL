@@ -16,3 +16,10 @@ Inside, you will find detailed explanations, command syntaxes, and conceptual wr
 7. [Data Manipulation: Insertions](#7-data-manipulation-insertions)
 
 ---
+
+## 1. What is a Database?
+A **Database** is a systematic and organized collection of data stored electronically in a computer system. 
+* **DBMS (Database Management System):** Software used to manage, store, retrieve, and define data in a database.
+* **RDBMS (Relational Database Management System):** A type of DBMS that stores data in a structured format using **tables** (rows and columns). Relationships are established between tables. Examples include MySQL, PostgreSQL, MS SQL Server, and SQLite.
+
+---
