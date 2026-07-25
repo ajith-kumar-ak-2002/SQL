@@ -135,3 +135,31 @@ DROP TABLE table_name;
 ```
 
 ---
+
+## 7. Data Manipulation: Insertions
+
+Once a table is created, you populate it using the `INSERT` command.
+
+### Insert Values (Specifying Columns)
+Best practice syntax specifying which columns receive which values.
+```sql
+INSERT INTO table_name (column1, column2, column3)
+VALUES (value1, value2, value3);
+```
+
+### Insert Values (All Columns)
+Inserts values for every column in the exact order they are defined in the schema.
+```sql
+INSERT INTO table_name
+VALUES (value1, value2, value3);
+```
+
+### Insert Multiple Rows
+Inserts several rows of data using a single query.
+```sql
+INSERT INTO table_name (column1, column2, column3)
+VALUES 
+    (valueA1, valueA2, valueA3),
+    (valueB1, valueB2, valueB3),
+    (valueC1, valueC2, valueC3);
+```
