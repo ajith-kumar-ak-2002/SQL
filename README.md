@@ -219,3 +219,22 @@ UPDATE employees
 SET salary = 50000
 WHERE employee_id = 101;
 ```
+
+---
+
+### C. DELETE Command
+Used to remove existing records from a table.
+
+> [!WARNING]
+> Always use a `WHERE` clause with the `DELETE` command. If you omit `WHERE`, **all rows** in the table will be deleted!
+
+```sql
+DELETE FROM table_name
+WHERE condition;
+```
+
+**Example:**
+```sql
+DELETE FROM employees
+WHERE employee_id = 101;
+```
