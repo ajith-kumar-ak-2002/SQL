@@ -10,10 +10,10 @@ Inside, you will find detailed explanations, command syntaxes, and conceptual wr
 1. [What is a Database?](#1-what-is-a-database)
 2. [Types of SQL Commands](#2-types-of-sql-commands)
 3. [SQL Datatypes](#3-sql-datatypes)
-4. [SQL Constraints](#4-sql-constraints)
+4. [SQL Constraints & The Primary Key](#4-sql-constraints--the-primary-key)
 5. [Database Administration Commands](#5-database-administration-commands)
 6. [Table Administration Commands](#6-table-administration-commands)
-7. [Data Manipulation: Insertions](#7-data-manipulation-insertions)
+7. [Data Manipulation: INSERT, UPDATE, and DELETE](#7-data-manipulation-insert-update-and-delete)
 
 ---
 
@@ -57,15 +57,23 @@ Datatypes define the kind of value that can be stored in a column. Common catego
 
 ---
 
-## 4. SQL Constraints
+## 4. SQL Constraints & The Primary Key
 Constraints are rules applied to columns to limit the type of data that can go into a table. This ensures the accuracy and reliability of the data (data integrity).
 
 * **`NOT NULL`**: Ensures that a column cannot have a `NULL` value.
 * **`UNIQUE`**: Ensures that all values in a column are distinct.
-* **`PRIMARY KEY`**: A combination of `NOT NULL` and `UNIQUE`. Uniquely identifies each row in a table.
+* **`PRIMARY KEY`**: Uniquely identifies each row in a table. It is a combination of `NOT NULL` and `UNIQUE`.
 * **`FOREIGN KEY`**: Prevents actions that would destroy links between tables. Links a column to a primary key in another table.
 * **`CHECK`**: Ensures that the values in a column satisfy a specific condition.
 * **`DEFAULT`**: Sets a default value for a column if no value is specified.
+
+### 🔑 Why is a Primary Key Important?
+The **Primary Key** is one of the most critical concepts in relational databases for the following reasons:
+1. **Unique Identification:** It ensures that every record/row in the table can be uniquely identified. No two rows can have the same primary key value.
+2. **Prevents Duplicate Data:** By enforcing uniqueness, it prevents accidental insertion of duplicate records (e.g., two customers with the exact same customer ID).
+3. **Establishes Relationships:** It is used as a reference point for **Foreign Keys** in other tables to create connections and relationships between tables.
+4. **Faster Data Retrieval:** Databases automatically create an index on the primary key, which drastically speeds up searches, queries, and lookups.
+5. **Data Integrity:** It ensures that database records remain reliable, organized, and logically structured.
 
 ---
 
@@ -134,27 +142,54 @@ Permanently deletes a table and all its rows.
 DROP TABLE table_name;
 ```
 
+### E. Alter a Table
+The `ALTER TABLE` command is used to add, delete, or modify columns in an existing table.
+
+#### 1. ADD Column
+Adds a new column to an existing table.
+```sql
+ALTER TABLE table_name
+ADD column_name datatype;
+```
+
+#### 2. DROP (Delete) Column
+Removes an existing column from a table.
+```sql
+ALTER TABLE table_name
+DROP COLUMN column_name;
+```
+
+#### 3. MODIFY Column
+Changes the datatype or constraint of an existing column.
+```sql
+ALTER TABLE table_name
+MODIFY COLUMN column_name new_datatype;
+```
+
 ---
 
-## 7. Data Manipulation: Insertions
+## 7. Data Manipulation: INSERT, UPDATE, and DELETE
 
-Once a table is created, you populate it using the `INSERT` command.
+Data Manipulation Language (DML) commands allow you to manage the actual records inside your tables.
 
-### Insert Values (Specifying Columns)
+### A. INSERT Command
+Used to add new rows of data into a table.
+
+#### Insert Values (Specifying Columns)
 Best practice syntax specifying which columns receive which values.
 ```sql
 INSERT INTO table_name (column1, column2, column3)
 VALUES (value1, value2, value3);
 ```
 
-### Insert Values (All Columns)
+#### Insert Values (All Columns)
 Inserts values for every column in the exact order they are defined in the schema.
 ```sql
 INSERT INTO table_name
 VALUES (value1, value2, value3);
 ```
 
-### Insert Multiple Rows
+#### Insert Multiple Rows
 Inserts several rows of data using a single query.
 ```sql
 INSERT INTO table_name (column1, column2, column3)
@@ -162,4 +197,25 @@ VALUES
     (valueA1, valueA2, valueA3),
     (valueB1, valueB2, valueB3),
     (valueC1, valueC2, valueC3);
+```
+
+---
+
+### B. UPDATE Command
+Used to modify existing records in a table. 
+
+> [!WARNING]
+> Always use a `WHERE` clause with the `UPDATE` command. If you omit `WHERE`, **all rows** in the table will be updated!
+
+```sql
+UPDATE table_name
+SET column1 = value1, column2 = value2
+WHERE condition;
+```
+
+**Example:**
+```sql
+UPDATE employees
+SET salary = 50000
+WHERE employee_id = 101;
 ```
