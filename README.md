@@ -242,3 +242,95 @@ WHERE employee_id = 101;
 ```
 
 ---
+
+## 8. Table with Constraints Example
+
+Here is an example of creating a table with various constraints applied to ensure data integrity:
+
+```sql
+CREATE TABLE employees (
+    Id INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Age INT,
+    Gender VARCHAR(10),
+    Email VARCHAR(100) UNIQUE,
+    Salary DECIMAL(10,2),
+    Dob DATE,
+    City VARCHAR(100),
+    Joining_Date DATE,
+    Is_active BOOLEAN
+);
+```
+
+---
+
+## 9. Querying Data: DQL SELECT Statements
+
+Data Query Language (DQL) is used to fetch data from the database. The `SELECT` statement is the primary command used for this purpose.
+
+### A. Basic Select
+Retrieves all columns and all rows from a table.
+```sql
+SELECT * FROM employees;
+```
+
+### B. Specific Column
+Retrieves only specified columns from a table to reduce overhead and focus on relevant data.
+```sql
+SELECT Id, Name, Salary FROM employees;
+```
+
+### C. WHERE Condition
+Filters records based on a specific condition.
+```sql
+SELECT * FROM employees WHERE age > 25;
+```
+
+### D. AND Condition
+Combines multiple conditions. A row is included in the result set if **all** conditions are true.
+```sql
+SELECT * FROM employees WHERE Gender = 'Male' AND Salary > 50000;
+```
+
+### E. OR Condition
+Combines multiple conditions. A row is included if **at least one** condition is true.
+```sql
+SELECT * FROM employees WHERE city = 'Mumbai' OR city = 'Delhi';
+```
+
+### F. LIKE Condition
+Performs pattern matching using wildcards (e.g., `%` matches zero or more characters).
+```sql
+SELECT * FROM employees WHERE Name LIKE 'A%';
+```
+
+### G. BETWEEN
+Selects values within a given range (inclusive of start and end values).
+```sql
+SELECT * FROM employees WHERE salary BETWEEN 40000 AND 60000;
+```
+
+### H. ORDER BY
+Sorts the result set in ascending (`ASC`) or descending (`DESC`) order.
+```sql
+SELECT * FROM employees ORDER BY salary ASC;
+```
+
+### I. LIMIT (Offset)
+Restricts the number of returned rows. Optionally, `OFFSET` can be used to skip a specified number of rows before beginning to return the records.
+
+**Get top 3 highest salaries:**
+```sql
+SELECT * FROM employees ORDER BY salary DESC LIMIT 3;
+```
+
+**Skip first 5 rows and show next 5 rows:**
+```sql
+SELECT * FROM employees LIMIT 5 OFFSET 5;
+```
+
+### J. DISTINCT
+Removes duplicate rows from the query results, returning only unique values.
+```sql
+SELECT DISTINCT city FROM employees;
+```
