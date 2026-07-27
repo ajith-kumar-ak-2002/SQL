@@ -169,3 +169,76 @@ MODIFY COLUMN column_name new_datatype;
 ```
 
 ---
+
+## 7. Data Manipulation: INSERT, UPDATE, and DELETE
+
+Data Manipulation Language (DML) commands allow you to manage the actual records inside your tables.
+
+### A. INSERT Command
+Used to add new rows of data into a table.
+
+#### Insert Values (Specifying Columns)
+Best practice syntax specifying which columns receive which values.
+```sql
+INSERT INTO table_name (column1, column2, column3)
+VALUES (value1, value2, value3);
+```
+
+#### Insert Values (All Columns)
+Inserts values for every column in the exact order they are defined in the schema.
+```sql
+INSERT INTO table_name
+VALUES (value1, value2, value3);
+```
+
+#### Insert Multiple Rows
+Inserts several rows of data using a single query.
+```sql
+INSERT INTO table_name (column1, column2, column3)
+VALUES 
+    (valueA1, valueA2, valueA3),
+    (valueB1, valueB2, valueB3),
+    (valueC1, valueC2, valueC3);
+```
+
+---
+
+### B. UPDATE Command
+Used to modify existing records in a table. 
+
+> [!WARNING]
+> Always use a `WHERE` clause with the `UPDATE` command. If you omit `WHERE`, **all rows** in the table will be updated!
+
+```sql
+UPDATE table_name
+SET column1 = value1, column2 = value2
+WHERE condition;
+```
+
+**Example:**
+```sql
+UPDATE employees
+SET salary = 50000
+WHERE employee_id = 101;
+```
+
+---
+
+### C. DELETE Command
+Used to remove existing records from a table.
+
+> [!WARNING]
+> Always use a `WHERE` clause with the `DELETE` command. If you omit `WHERE`, **all rows** in the table will be deleted!
+
+```sql
+DELETE FROM table_name
+WHERE condition;
+```
+
+**Example:**
+```sql
+DELETE FROM employees
+WHERE employee_id = 101;
+```
+
+---
