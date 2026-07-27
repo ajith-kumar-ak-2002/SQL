@@ -108,3 +108,64 @@ DROP DATABASE database_name;
 ```
 
 ---
+
+## 6. Table Administration Commands
+
+Tables are the core structures that hold data.
+
+### A. Create a Table
+Creates a new table with defined columns, datatypes, and constraints.
+```sql
+CREATE TABLE table_name (
+    column1 datatype constraint,
+    column2 datatype constraint,
+    column3 datatype,
+    PRIMARY KEY (column1)
+);
+```
+
+### B. Show Tables
+Lists all tables within the currently selected database.
+```sql
+SHOW TABLES;
+```
+
+### C. Describe Table Structure
+Shows column names, datatypes, null status, keys, and default values.
+```sql
+DESCRIBE table_name;
+-- Or alternatively:
+EXPLAIN table_name;
+```
+
+### D. Delete (Drop) a Table
+Permanently deletes a table and all its rows.
+```sql
+DROP TABLE table_name;
+```
+
+### E. Alter a Table
+The `ALTER TABLE` command is used to add, delete, or modify columns in an existing table.
+
+#### 1. ADD Column
+Adds a new column to an existing table.
+```sql
+ALTER TABLE table_name
+ADD column_name datatype;
+```
+
+#### 2. DROP (Delete) Column
+Removes an existing column from a table.
+```sql
+ALTER TABLE table_name
+DROP COLUMN column_name;
+```
+
+#### 3. MODIFY Column
+Changes the datatype or constraint of an existing column.
+```sql
+ALTER TABLE table_name
+MODIFY COLUMN column_name new_datatype;
+```
+
+---
