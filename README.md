@@ -38,3 +38,23 @@ SQL commands are categorized based on their functionality:
 | **TCL** (Transaction Control Language) | Manages transactions within the database. | `COMMIT`, `ROLLBACK`, `SAVEPOINT` |
 
 ---
+
+## 3. SQL Datatypes
+Datatypes define the kind of value that can be stored in a column. Common categories include:
+
+### 📝 String / Character Types
+* `CHAR(size)`: Fixed-length character string.
+* `VARCHAR(size)`: Variable-length character string.
+* `TEXT`: Long-form text block.
+
+### 🔢 Numeric Types
+* `INT` / `INTEGER`: Standard whole numbers.
+* `DECIMAL(precision, scale)` / `NUMERIC`: Exact numeric values (e.g., currency).
+* `FLOAT` / `DOUBLE`: Approximate decimal values.
+
+### 📅 Date and Time Types
+* `DATE`: Format `YYYY-MM-DD`.
+* `TIME`: Format `HH:MM:SS`.
+* `DATETIME` / `TIMESTAMP`: Format `YYYY-MM-DD HH:MM:SS`.
+
+---
