@@ -333,4 +333,4 @@ SELECT * FROM employees LIMIT 5 OFFSET 5;
 Removes duplicate rows from the query results, returning only unique values.
 ```sql
 SELECT DISTINCT city FROM employees;
-```
+
