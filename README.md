@@ -58,3 +58,23 @@ Datatypes define the kind of value that can be stored in a column. Common catego
 * `DATETIME` / `TIMESTAMP`: Format `YYYY-MM-DD HH:MM:SS`.
 
 ---
+
+## 4. SQL Constraints & The Primary Key
+Constraints are rules applied to columns to limit the type of data that can go into a table. This ensures the accuracy and reliability of the data (data integrity).
+
+* **`NOT NULL`**: Ensures that a column cannot have a `NULL` value.
+* **`UNIQUE`**: Ensures that all values in a column are distinct.
+* **`PRIMARY KEY`**: Uniquely identifies each row in a table. It is a combination of `NOT NULL` and `UNIQUE`.
+* **`FOREIGN KEY`**: Prevents actions that would destroy links between tables. Links a column to a primary key in another table.
+* **`CHECK`**: Ensures that the values in a column satisfy a specific condition.
+* **`DEFAULT`**: Sets a default value for a column if no value is specified.
+
+### 🔑 Why is a Primary Key Important?
+The **Primary Key** is one of the most critical concepts in relational databases for the following reasons:
+1. **Unique Identification:** It ensures that every record/row in the table can be uniquely identified. No two rows can have the same primary key value.
+2. **Prevents Duplicate Data:** By enforcing uniqueness, it prevents accidental insertion of duplicate records (e.g., two customers with the exact same customer ID).
+3. **Establishes Relationships:** It is used as a reference point for **Foreign Keys** in other tables to create connections and relationships between tables.
+4. **Faster Data Retrieval:** Databases automatically create an index on the primary key, which drastically speeds up searches, queries, and lookups.
+5. **Data Integrity:** It ensures that database records remain reliable, organized, and logically structured.
+
+---
