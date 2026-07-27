@@ -78,3 +78,33 @@ The **Primary Key** is one of the most critical concepts in relational databases
 5. **Data Integrity:** It ensures that database records remain reliable, organized, and logically structured.
 
 ---
+
+## 5. Database Administration Commands
+
+These commands manage databases at a high level.
+
+### A. Create a Database
+Creates a new database container.
+```sql
+CREATE DATABASE database_name;
+```
+
+### B. Show Databases
+Lists all available databases in the server.
+```sql
+SHOW DATABASES;
+```
+
+### C. Use a Database
+Selects a database to perform subsequent table operations.
+```sql
+USE database_name;
+```
+
+### D. Delete (Drop) a Database
+Deletes a database and all its tables/data permanently.
+```sql
+DROP DATABASE database_name;
+```
+
+---
