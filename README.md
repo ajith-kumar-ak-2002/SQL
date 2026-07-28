@@ -20,3 +20,24 @@ Inside, you will find detailed explanations, command syntaxes, and conceptual wr
 11. [SQL Functions: Single-Row & Aggregate](#11-sql-functions-single-row--aggregate)
 
 ---
+
+## 1. What is a Database?
+A **Database** is a systematic and organized collection of data stored electronically in a computer system. 
+* **DBMS (Database Management System):** Software used to manage, store, retrieve, and define data in a database.
+* **RDBMS (Relational Database Management System):** A type of DBMS that stores data in a structured format using **tables** (rows and columns). Relationships are established between tables. Examples include MySQL, PostgreSQL, MS SQL Server, and SQLite.
+
+---
+
+## 2. Types of SQL Commands
+SQL commands are categorized based on their functionality:
+
+| Category | Description | Key Commands |
+| :--- | :--- | :--- |
+| **DDL** (Data Definition Language) | Defines or alters the database structure/schema. | `CREATE`, `DROP`, `ALTER`, `TRUNCATE` |
+| **DML** (Data Manipulation Language) | Manages and manipulates data within existing structures. | `INSERT`, `UPDATE`, `DELETE` |
+| **DQL** (Data Query Language) | Retrieves data from the database. | `SELECT` |
+| **DCL** (Data Control Language) | Controls access permissions and privileges. | `GRANT`, `REVOKE` |
+| **TCL** (Transaction Control Language) | Manages transactions within the database. | `COMMIT`, `ROLLBACK`, `SAVEPOINT` |
+
+---
+
