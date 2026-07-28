@@ -171,3 +171,242 @@ MODIFY COLUMN column_name new_datatype;
 ```
 
 ---
+
+## 7. Data Manipulation: INSERT, UPDATE, and DELETE
+
+Data Manipulation Language (DML) commands allow you to manage the actual records inside your tables.
+
+### A. INSERT Command
+Used to add new rows of data into a table.
+
+#### Insert Values (Specifying Columns)
+Best practice syntax specifying which columns receive which values.
+```sql
+INSERT INTO table_name (column1, column2, column3)
+VALUES (value1, value2, value3);
+```
+
+#### Insert Values (All Columns)
+Inserts values for every column in the exact order they are defined in the schema.
+```sql
+INSERT INTO table_name
+VALUES (value1, value2, value3);
+```
+
+#### Insert Multiple Rows
+Inserts several rows of data using a single query.
+```sql
+INSERT INTO table_name (column1, column2, column3)
+VALUES 
+    (valueA1, valueA2, valueA3),
+    (valueB1, valueB2, valueB3),
+    (valueC1, valueC2, valueC3);
+```
+
+---
+
+### B. UPDATE Command
+Used to modify existing records in a table. 
+
+> [!WARNING]
+> Always use a `WHERE` clause with the `UPDATE` command. If you omit `WHERE`, **all rows** in the table will be updated!
+
+```sql
+UPDATE table_name
+SET column1 = value1, column2 = value2
+WHERE condition;
+```
+
+**Example:**
+```sql
+UPDATE employees
+SET salary = 50000
+WHERE employee_id = 101;
+```
+
+---
+
+### C. DELETE Command
+Used to remove existing records from a table.
+
+> [!WARNING]
+> Always use a `WHERE` clause with the `DELETE` command. If you omit `WHERE`, **all rows** in the table will be deleted!
+
+```sql
+DELETE FROM table_name
+WHERE condition;
+```
+
+**Example:**
+```sql
+DELETE FROM employees
+WHERE employee_id = 101;
+```
+
+---
+
+## 8. Table with Constraints Example
+
+Here is an example of creating a table with various constraints applied to ensure data integrity:
+
+```sql
+CREATE TABLE employees (
+    Id INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Age INT,
+    Gender VARCHAR(10),
+    Email VARCHAR(100) UNIQUE,
+    Salary DECIMAL(10,2),
+    Dob DATE,
+    City VARCHAR(100),
+    Joining_Date DATE,
+    Is_active BOOLEAN
+);
+```
+
+---
+
+## 9. Querying Data: DQL SELECT Statements
+
+Data Query Language (DQL) is used to fetch data from the database. The `SELECT` statement is the primary command used for this purpose.
+
+### A. Basic Select
+Retrieves all columns and all rows from a table.
+```sql
+SELECT * FROM employees;
+```
+
+### B. Specific Column
+Retrieves only specified columns from a table to reduce overhead and focus on relevant data.
+```sql
+SELECT Id, Name, Salary FROM employees;
+```
+
+### C. WHERE Condition
+Filters records based on a specific condition.
+```sql
+SELECT * FROM employees WHERE age > 25;
+```
+
+### D. AND Condition
+Combines multiple conditions. A row is included in the result set if **all** conditions are true.
+```sql
+SELECT * FROM employees WHERE Gender = 'Male' AND Salary > 50000;
+```
+
+### E. OR Condition
+Combines multiple conditions. A row is included if **at least one** condition is true.
+```sql
+SELECT * FROM employees WHERE city = 'Mumbai' OR city = 'Delhi';
+```
+
+### F. LIKE Condition
+Performs pattern matching using wildcards (e.g., `%` matches zero or more characters).
+```sql
+SELECT * FROM employees WHERE Name LIKE 'A%';
+```
+
+### G. BETWEEN
+Selects values within a given range (inclusive of start and end values).
+```sql
+SELECT * FROM employees WHERE salary BETWEEN 40000 AND 60000;
+```
+
+### H. ORDER BY
+Sorts the result set in ascending (`ASC`) or descending (`DESC`) order.
+```sql
+SELECT * FROM employees ORDER BY salary ASC;
+```
+
+### I. LIMIT (Offset)
+Restricts the number of returned rows. Optionally, `OFFSET` can be used to skip a specified number of rows before beginning to return the records.
+
+**Get top 3 highest salaries:**
+```sql
+SELECT * FROM employees ORDER BY salary DESC LIMIT 3;
+```
+
+**Skip first 5 rows and show next 5 rows:**
+```sql
+SELECT * FROM employees LIMIT 5 OFFSET 5;
+```
+
+### J. DISTINCT
+Removes duplicate rows from the query results, returning only unique values.
+```sql
+SELECT DISTINCT city FROM employees;
+```
+
+---
+
+## 10. Transaction Control & Autocommit
+
+Transaction Control Language (TCL) commands manage how transactions (logical units of database work) are committed or rolled back.
+
+### A. Autocommit
+In standard SQL environments (like MySQL), **Autocommit** is enabled by default. This means every individual SQL command (like `INSERT`, `UPDATE`, `DELETE`) is executed and immediately saved permanently to the database as a finished transaction.
+
+To control transactions manually, we can disable autocommit:
+```sql
+-- Disable autocommit
+SET autocommit = 0;
+
+-- Or alternatively, start an explicit transaction
+START TRANSACTION;
+```
+
+When autocommit is disabled, changes are only visible to the current database session and are not permanently saved until you run `COMMIT`.
+
+### B. Rollback
+The `ROLLBACK` command is used to revert any database changes made during the current transaction back to the last committed state or to a defined `SAVEPOINT`. This is crucial for maintaining data integrity when an error occurs.
+
+```sql
+-- Revert all changes since the last COMMIT
+ROLLBACK;
+```
+
+---
+
+## 11. SQL Functions: Single-Row & Aggregate
+
+SQL provides various built-in functions to perform calculations and manipulate data. These are broadly divided into two types:
+
+### A. Single-Row (Scalar) Functions
+These functions operate on a single record/row at a time and return exactly one result value for every row processed.
+
+* **String Functions:**
+  * `UPPER(str)` / `LOWER(str)`: Converts casing.
+  * `CONCAT(str1, str2, ...)`: Joins strings.
+  * `SUBSTRING(str, pos, len)`: Extracts part of a string.
+  * `LENGTH(str)`: Returns character count.
+* **Numeric Functions:**
+  * `ROUND(val, decimals)`: Rounds a number.
+  * `ABS(val)`: Returns the absolute value.
+* **Date Functions:**
+  * `NOW()` / `CURDATE()`: Returns current timestamp/date.
+  * `DATEDIFF(date1, date2)`: Returns difference in days.
+
+**Example:**
+```sql
+SELECT Name, UPPER(Name), Salary, ROUND(Salary, 0) FROM employees;
+```
+
+### B. Aggregate Functions
+These functions operate on multiple rows of a column combined and return a single summary value for the entire group.
+
+* **`COUNT(column)`**: Returns the number of non-null values.
+* **`SUM(column)`**: Returns the total sum of numeric values.
+* **`AVG(column)`**: Returns the average of numeric values.
+* **`MIN(column)`**: Returns the lowest value.
+* **`MAX(column)`**: Returns the highest value.
+
+**Example:**
+```sql
+SELECT 
+    COUNT(*) AS total_employees, 
+    SUM(Salary) AS total_payroll, 
+    AVG(Salary) AS average_salary,
+    MIN(Salary) AS lowest_salary, 
+    MAX(Salary) AS highest_salary 
+FROM employees;
+```
