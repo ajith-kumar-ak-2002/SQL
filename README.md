@@ -266,3 +266,117 @@ CREATE TABLE employees (
 ```
 
 ---
+
+## 9. Querying Data: DQL SELECT Statements
+
+Data Query Language (DQL) is used to fetch data from the database. The `SELECT` statement is the primary command used for this purpose.
+
+### A. Basic Select
+Retrieves all columns and all rows from a table.
+```sql
+SELECT * FROM employees;
+```
+
+### B. Specific Column
+Retrieves only specified columns from a table to reduce overhead and focus on relevant data.
+```sql
+SELECT Id, Name, Salary FROM employees;
+```
+
+### C. WHERE Condition
+Filters records based on a specific condition.
+```sql
+SELECT * FROM employees WHERE age > 25;
+```
+
+### D. AND Condition
+Combines multiple conditions. A row is included in the result set if **all** conditions are true.
+```sql
+SELECT * FROM employees WHERE Gender = 'Male' AND Salary > 50000;
+```
+
+### E. OR Condition
+Combines multiple conditions. A row is included if **at least one** condition is true.
+```sql
+SELECT * FROM employees WHERE city = 'Mumbai' OR city = 'Delhi';
+```
+
+### F. LIKE Condition
+Performs pattern matching using wildcards (e.g., `%` matches zero or more characters).
+```sql
+SELECT * FROM employees WHERE Name LIKE 'A%';
+```
+
+### G. BETWEEN
+Selects values within a given range (inclusive of start and end values).
+```sql
+SELECT * FROM employees WHERE salary BETWEEN 40000 AND 60000;
+```
+
+### H. ORDER BY
+Sorts the result set in ascending (`ASC`) or descending (`DESC`) order.
+```sql
+SELECT * FROM employees ORDER BY salary ASC;
+```
+
+### I. LIMIT (Offset)
+Restricts the number of returned rows. Optionally, `OFFSET` can be used to skip a specified number of rows before beginning to return the records.
+
+**Get top 3 highest salaries:**
+```sql
+SELECT * FROM employees ORDER BY salary DESC LIMIT 3;
+```
+
+**Skip first 5 rows and show next 5 rows:**
+```sql
+SELECT * FROM employees LIMIT 5 OFFSET 5;
+```
+
+### J. DISTINCT
+Removes duplicate rows from the query results, returning only unique values.
+```sql
+SELECT DISTINCT city FROM employees;
+```
+
+---
+
+## 10. Transaction Control & Autocommit
+
+A **Transaction** is a single logical unit of database work that consists of one or more SQL statements. Transactions are crucial for ensuring data integrity and follow the **ACID** properties:
+* **Atomicity:** All operations inside the transaction must succeed, or none do (All-or-Nothing).
+* **Consistency:** Keeps database state valid before and after the transaction.
+* **Isolation:** Transactions run independently of each other without interference.
+* **Durability:** Once committed, changes are permanently saved and survive system failures.
+
+### A. Autocommit Behavior
+In standard SQL environments (like MySQL), **Autocommit** is enabled by default. This means every individual SQL command (like `INSERT`, `UPDATE`, `DELETE`) is executed and immediately saved permanently to the database as a finished transaction.
+
+To control transactions manually, we can disable autocommit:
+```sql
+-- Disable autocommit session-wide
+SET autocommit = 0;
+
+-- Or start an explicit transaction block (recommended)
+START TRANSACTION;
+```
+
+When autocommit is disabled (or a transaction block is started), changes are temporary and only visible to the current session until they are committed.
+
+### B. Commit & Rollback
+* **`COMMIT`:** Saves all changes made during the current transaction permanently to the database.
+* **`ROLLBACK`:** Reverts/undoes all changes made during the current transaction, returning the database to the state of the last committed transaction or a set `SAVEPOINT`.
+
+```sql
+START TRANSACTION;
+
+UPDATE accounts SET balance = balance - 100 WHERE account_id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE account_id = 2;
+
+-- If both updates succeed, save permanently:
+COMMIT;
+
+-- If something goes wrong, revert everything:
+ROLLBACK;
+```
+
+---
