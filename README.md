@@ -380,3 +380,49 @@ ROLLBACK;
 ```
 
 ---
+
+## 11. SQL Functions: Single-Row & Aggregate
+
+SQL provides various built-in functions to perform calculations and manipulate data. These are broadly divided into two types:
+
+### A. Single-Row (Scalar) Functions
+These functions operate on a single record/row at a time and return exactly one result value for every row processed.
+
+* **String Functions:**
+  * `UPPER(str)` / `LOWER(str)`: Converts casing.
+  * `CONCAT(str1, str2, ...)`: Joins strings.
+  * `SUBSTRING(str, pos, len)`: Extracts part of a string.
+  * `LENGTH(str)`: Returns character count.
+* **Numeric Functions:**
+  * `ROUND(val, decimals)`: Rounds a number.
+  * `ABS(val)`: Returns the absolute value.
+* **Date Functions:**
+  * `NOW()` / `CURDATE()`: Returns current timestamp/date.
+  * `DATEDIFF(date1, date2)`: Returns difference in days.
+
+**Example:**
+```sql
+SELECT Name, UPPER(Name), Salary, ROUND(Salary, 0) FROM employees;
+```
+
+### B. Aggregate Functions
+These functions operate on multiple rows of a column combined and return a single summary value for the entire group.
+
+* **`COUNT(column)`**: Returns the number of non-null values.
+* **`SUM(column)`**: Returns the total sum of numeric values.
+* **`AVG(column)`**: Returns the average of numeric values.
+* **`MIN(column)`**: Returns the lowest value.
+* **`MAX(column)`**: Returns the highest value.
+
+**Example:**
+```sql
+SELECT 
+    COUNT(*) AS total_employees, 
+    SUM(Salary) AS total_payroll, 
+    AVG(Salary) AS average_salary,
+    MIN(Salary) AS lowest_salary, 
+    MAX(Salary) AS highest_salary 
+FROM employees;
+```
+
+---
