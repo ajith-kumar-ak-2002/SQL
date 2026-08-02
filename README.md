@@ -111,3 +111,158 @@ DROP DATABASE database_name;
 ```
 
 ---
+
+## 6. Table Administration Commands
+
+Tables are the core structures that hold data.
+
+### A. Create a Table
+Creates a new table with defined columns, datatypes, and constraints.
+```sql
+CREATE TABLE table_name (
+    column1 datatype constraint,
+    column2 datatype constraint,
+    column3 datatype,
+    PRIMARY KEY (column1)
+);
+```
+
+### B. Show Tables
+Lists all tables within the currently selected database.
+```sql
+SHOW TABLES;
+```
+
+### C. Describe Table Structure
+Shows column names, datatypes, null status, keys, and default values.
+```sql
+DESCRIBE table_name;
+-- Or alternatively:
+EXPLAIN table_name;
+```
+
+### D. Delete (Drop) a Table
+Permanently deletes a table and all its rows.
+```sql
+DROP TABLE table_name;
+```
+
+### E. Alter a Table
+The `ALTER TABLE` command is used to add, delete, or modify columns in an existing table.
+
+#### 1. ADD Column
+Adds a new column to an existing table.
+```sql
+ALTER TABLE table_name
+ADD column_name datatype;
+```
+
+#### 2. DROP (Delete) Column
+Removes an existing column from a table.
+```sql
+ALTER TABLE table_name
+DROP COLUMN column_name;
+```
+
+#### 3. MODIFY Column
+Changes the datatype or constraint of an existing column.
+```sql
+ALTER TABLE table_name
+MODIFY COLUMN column_name new_datatype;
+```
+
+---
+
+## 7. Data Manipulation: INSERT, UPDATE, and DELETE
+
+Data Manipulation Language (DML) commands allow you to manage the actual records inside your tables.
+
+### A. INSERT Command
+Used to add new rows of data into a table.
+
+#### Insert Values (Specifying Columns)
+Best practice syntax specifying which columns receive which values.
+```sql
+INSERT INTO table_name (column1, column2, column3)
+VALUES (value1, value2, value3);
+```
+
+#### Insert Values (All Columns)
+Inserts values for every column in the exact order they are defined in the schema.
+```sql
+INSERT INTO table_name
+VALUES (value1, value2, value3);
+```
+
+#### Insert Multiple Rows
+Inserts several rows of data using a single query.
+```sql
+INSERT INTO table_name (column1, column2, column3)
+VALUES 
+    (valueA1, valueA2, valueA3),
+    (valueB1, valueB2, valueB3),
+    (valueC1, valueC2, valueC3);
+```
+
+---
+
+### B. UPDATE Command
+Used to modify existing records in a table. 
+
+> [!WARNING]
+> Always use a `WHERE` clause with the `UPDATE` command. If you omit `WHERE`, **all rows** in the table will be updated!
+
+```sql
+UPDATE table_name
+SET column1 = value1, column2 = value2
+WHERE condition;
+```
+
+**Example:**
+```sql
+UPDATE employees
+SET salary = 50000
+WHERE employee_id = 101;
+```
+
+---
+
+### C. DELETE Command
+Used to remove existing records from a table.
+
+> [!WARNING]
+> Always use a `WHERE` clause with the `DELETE` command. If you omit `WHERE`, **all rows** in the table will be deleted!
+
+```sql
+DELETE FROM table_name
+WHERE condition;
+```
+
+**Example:**
+```sql
+DELETE FROM employees
+WHERE employee_id = 101;
+```
+
+---
+
+## 8. Table with Constraints Example
+
+Here is an example of creating a table with various constraints applied to ensure data integrity:
+
+```sql
+CREATE TABLE employees (
+    Id INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Age INT,
+    Gender VARCHAR(10),
+    Email VARCHAR(100) UNIQUE,
+    Salary DECIMAL(10,2),
+    Dob DATE,
+    City VARCHAR(100),
+    Joining_Date DATE,
+    Is_active BOOLEAN
+);
+```
+
+---
