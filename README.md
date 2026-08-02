@@ -426,3 +426,75 @@ FROM employees;
 ```
 
 ---
+
+## 12. Foreign Key Constraints & Referential Integrity
+
+### 🔑 Primary Key vs. Foreign Key
+* **Primary Key (PK):** A column (or combination of columns) that uniquely identifies a row in its own table. It cannot contain `NULL` values.
+* **Foreign Key (FK):** A column in a table that references the Primary Key of another table (the parent table). It is used to establish relationships and maintain referential integrity.
+
+---
+
+### 🛡️ Default Foreign Key Behavior (FK Protection)
+By default, databases enforce **Foreign Key Protection**. This means that if a row in the parent table is referenced by one or more rows in the child table:
+* You **cannot delete** the parent row.
+* You **cannot update** the parent row's primary key value.
+* Attempting to do so will result in a referential integrity violation error, protecting your database from containing orphaned child records.
+
+---
+
+### 🔄 Referential Actions (On Delete & On Update)
+We can customize the default behavior using referential actions defined on the Foreign Key constraint.
+
+#### 1. ON DELETE CASCADE
+If a row in the parent table is deleted, all matching rows in the child table will be **automatically deleted**.
+```sql
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+);
+```
+
+#### 2. ON DELETE SET NULL
+If a row in the parent table is deleted, the foreign key columns of the matching rows in the child table will be set to `NULL`.
+* *Note: The child column must not be defined as `NOT NULL` for this to work.*
+```sql
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL
+);
+```
+
+#### 3. ON DELETE NO ACTION / RESTRICT
+The default behavior. Any delete or update operation on the parent table that would orphan child records is **rejected** and throws an error.
+```sql
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE NO ACTION
+);
+```
+
+---
+
+### 🛠️ Modifying Foreign Key Constraints
+If you need to change a foreign key's behavior (e.g., from default `RESTRICT` to `ON DELETE CASCADE`), you must first drop the existing constraint and then add the new one.
+
+#### Step 1: Drop the Existing Foreign Key
+To drop a foreign key, you need to know its constraint name. You can find this name by running `SHOW CREATE TABLE child_table;`.
+```sql
+ALTER TABLE child_table 
+DROP FOREIGN KEY fk_constraint_name;
+```
+
+#### Step 2: Add the New Foreign Key Constraint with Cascade
+Add the constraint back with the desired cascading behavior:
+```sql
+ALTER TABLE child_table 
+ADD CONSTRAINT fk_constraint_name 
+FOREIGN KEY (child_column) 
+REFERENCES parent_table(parent_column) 
+ON DELETE CASCADE;
+```
