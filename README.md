@@ -514,3 +514,18 @@ SELECT columns
 FROM table1
 INNER JOIN table2 ON table1.common_column = table2.common_column;
 ```
+#### 2. LEFT (OUTER) JOIN
+Returns **all** records from the left table, and the matched records from the right table. If there is no match, the result is `NULL` from the right side.
+```sql
+SELECT columns
+FROM table1
+LEFT JOIN table2 ON table1.common_column = table2.common_column;
+```
+
+#### 3. RIGHT (OUTER) JOIN
+Returns **all** records from the right table, and the matched records from the left table. If there is no match, the result is `NULL` from the left side.
+```sql
+SELECT columns
+FROM table1
+RIGHT JOIN table2 ON table1.common_column = table2.common_column;
+```
