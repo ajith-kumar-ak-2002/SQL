@@ -499,3 +499,18 @@ FOREIGN KEY (child_column)
 REFERENCES parent_table(parent_column) 
 ON DELETE CASCADE;
 ```
+---
+
+## 13. SQL Joins: INNER, LEFT, and RIGHT
+
+**Joins** are used to combine rows from two or more tables based on a related column between them.
+
+### 🤝 Types of Joins
+
+#### 1. INNER JOIN
+Returns records that have matching values in **both** tables.
+```sql
+SELECT columns
+FROM table1
+INNER JOIN table2 ON table1.common_column = table2.common_column;
+```
