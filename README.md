@@ -19,6 +19,7 @@ Inside, you will find detailed explanations, command syntaxes, and conceptual wr
 10. [Transaction Control & Autocommit](#10-transaction-control--autocommit)
 11. [SQL Functions: Single-Row & Aggregate](#11-sql-functions-single-row--aggregate)
 12. [Foreign Key Constraints & Referential Integrity](#12-foreign-key-constraints--referential-integrity)
+13. [SQL Joins: INNER, LEFT, and RIGHT](#13-sql-joins-inner-left-and-right)
 
 ---
 
