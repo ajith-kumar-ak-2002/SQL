@@ -529,3 +529,31 @@ SELECT columns
 FROM table1
 RIGHT JOIN table2 ON table1.common_column = table2.common_column;
 ```
+---
+
+### 🔍 Joins with WHERE Conditions
+We can filter join results using the `WHERE` clause. This is also commonly used to find unmatched records (orphans).
+
+#### A. Filter Matched Records (e.g., Salary > 50,000)
+```sql
+SELECT e.emp_name, d.dept_name, e.salary
+FROM employees e
+INNER JOIN departments d ON e.dept_id = d.dept_id
+WHERE e.salary > 50000;
+```
+
+#### B. Find Unmatched Records on Left (e.g., Employees with no Department)
+```sql
+SELECT e.emp_name
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id
+WHERE e.dept_id IS NULL;
+```
+
+#### C. Find Unmatched Records on Right (e.g., Departments with no Employees)
+```sql
+SELECT d.dept_name
+FROM employees e
+RIGHT JOIN departments d ON e.dept_id = d.dept_id
+WHERE e.emp_id IS NULL;
+```
