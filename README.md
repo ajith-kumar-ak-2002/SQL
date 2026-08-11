@@ -561,3 +561,46 @@ RIGHT JOIN departments d ON e.dept_id = d.dept_id
 WHERE e.emp_id IS NULL;
 ```
 
+---
+
+## 14. Self Join
+
+A **Self Join** is a regular join in which a table is joined with itself. This is useful for querying hierarchical data or comparing rows within the same table.
+
+Since the same table is referenced twice, you **must** use table aliases to distinguish the left side of the table from the right side.
+
+### 📝 Syntax
+```sql
+SELECT a.column_name, b.column_name...
+FROM table_name a
+JOIN table_name b ON a.common_column = b.common_column;
+```
+
+### 💡 Example (Employee-Manager Hierarchy)
+Consider an `employees` table where each employee has a `manager_id` pointing to the `id` of another employee in the same table:
+
+| id | name | manager_id |
+|---|---|---|
+| 1 | Alice | NULL |
+| 2 | Bob | 1 |
+| 3 | Charlie | 1 |
+| 4 | David | 2 |
+
+To find who manages whom:
+```sql
+SELECT 
+    e.name AS Employee, 
+    m.name AS Manager
+FROM employees e
+LEFT JOIN employees m ON e.manager_id = m.id;
+```
+
+**Output:**
+| Employee | Manager |
+|---|---|
+| Alice | NULL |
+| Bob | Alice |
+| Charlie | Alice |
+| David | Bob |
+
+---
