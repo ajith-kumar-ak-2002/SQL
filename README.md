@@ -604,3 +604,46 @@ LEFT JOIN employees m ON e.manager_id = m.id;
 | David | Bob |
 
 ---
+
+## 15. Grouping Data: GROUP BY & HAVING
+
+The `GROUP BY` statement groups rows that have the same values into summary rows. It is typically used with aggregate functions (`COUNT()`, `MAX()`, `MIN()`, `SUM()`, `AVG()`) to group the result-set by one or more columns.
+
+### ⚠️ The HAVING Clause
+The `HAVING` clause was added to SQL because the `WHERE` keyword cannot be used with aggregate functions. It is used to filter the grouped results.
+
+### 📝 Syntax
+```sql
+SELECT column_name, aggregate_function(column_name)
+FROM table_name
+WHERE condition
+GROUP BY column_name
+HAVING aggregate_condition;
+```
+
+### 💡 Examples
+
+#### A. Group Employees by City and Count Them
+```sql
+SELECT City, COUNT(Id) AS total_employees
+FROM employees
+GROUP BY City;
+```
+
+#### B. Find Average Salary of Active Employees in Each City
+```sql
+SELECT City, AVG(Salary) AS average_salary
+FROM employees
+WHERE Is_active = true
+GROUP BY City;
+```
+
+#### C. Find Cities with More Than 5 Employees (Using HAVING)
+```sql
+SELECT City, COUNT(Id) AS total_employees
+FROM employees
+GROUP BY City
+HAVING COUNT(Id) > 5;
+```
+
+---
