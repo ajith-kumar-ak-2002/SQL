@@ -770,4 +770,3 @@ DROP VIEW view_name;
 DROP VIEW active_high_earners;
 ```
 ```
-
