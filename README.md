@@ -611,15 +611,23 @@ LEFT JOIN employees m ON e.manager_id = m.id;
 The `GROUP BY` statement groups rows that have the same values into summary rows. It is typically used with aggregate functions (`COUNT()`, `MAX()`, `MIN()`, `SUM()`, `AVG()`) to group the result-set by one or more columns.
 
 ### ⚠️ The HAVING Clause
-The `HAVING` clause was added to SQL because the `WHERE` keyword cannot be used with aggregate functions. It is used to filter the grouped results.
+The `HAVING` clause was added to SQL because the `WHERE` keyword cannot be used with aggregate functions (like `SUM`, `AVG`, `COUNT`, etc.). It is used to filter records **after** the grouping has taken place.
+
+#### 🔍 Difference Between WHERE and HAVING
+
+| Feature | `WHERE` | `HAVING` |
+| :--- | :--- | :--- |
+| **Applicability** | Filters individual rows **before** groups are formed. | Filters groups **after** `GROUP BY` is applied. |
+| **Aggregate Functions** | **Cannot** be used with aggregate functions (e.g., `WHERE SUM(Salary) > 50000` is invalid). | **Can** be used with aggregate functions. |
+| **Usage** | Can be used with `SELECT`, `UPDATE`, `DELETE`. | Can only be used with `SELECT` queries (typically with `GROUP BY`). |
 
 ### 📝 Syntax
 ```sql
 SELECT column_name, aggregate_function(column_name)
 FROM table_name
-WHERE condition
-GROUP BY column_name
-HAVING aggregate_condition;
+WHERE condition -- Filters rows
+GROUP BY column_name -- Groups rows
+HAVING aggregate_condition; -- Filters groups
 ```
 
 ### 💡 Examples
@@ -648,46 +656,3 @@ HAVING COUNT(Id) > 5;
 ```
 
 ---
-
-## 16. Set Operations: UNION & UNION ALL
-
-The `UNION` and `UNION ALL` operators are used to combine the result-sets of two or more `SELECT` statements into a single result-set.
-
-### 📋 Rules for Union Operations:
-1. Each `SELECT` statement within the union must have the **same number of columns**.
-2. The columns must also have **similar data types**.
-3. The columns in each `SELECT` statement must be in the **same order**.
-
-### 🔄 Difference Between UNION and UNION ALL
-* **`UNION`**: Combines the results and **removes duplicate rows** (only returns distinct values).
-* **`UNION ALL`**: Combines the results and **retains all rows**, including duplicates (faster than `UNION` because it doesn't perform duplicate checking).
-
-### 📝 Syntax
-```sql
--- Returns distinct values
-SELECT column_name(s) FROM table1
-UNION
-SELECT column_name(s) FROM table2;
-
--- Returns all values (including duplicates)
-SELECT column_name(s) FROM table1
-UNION ALL
-SELECT column_name(s) FROM table2;
-```
-
-### 💡 Example
-Suppose we have a `customers` table and a `suppliers` table, both containing `City` information:
-
-```sql
--- Find all unique cities where customers and suppliers are located
-SELECT City FROM customers
-UNION
-SELECT City FROM suppliers
-ORDER BY City;
-
--- Find all cities (including duplicates if both a customer and supplier are in the same city)
-SELECT City FROM customers
-UNION ALL
-SELECT City FROM suppliers
-ORDER BY City;
-```
