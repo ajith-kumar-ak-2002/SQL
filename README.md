@@ -713,3 +713,48 @@ A **View** is a virtual table in SQL that is based on the result-set of an SQL s
 4. **Data Integrity:** You can create read-only views to prevent users from accidentally modifying database records.
 
 ---
+
+### 📝 Syntax & Examples
+
+#### A. Create a View
+Creates a virtual table containing selected columns and rows.
+```sql
+CREATE VIEW view_name AS
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;
+```
+
+**Example:**
+```sql
+-- Create a view showing only active employees with high salaries
+CREATE VIEW active_high_earners AS
+SELECT Id, Name, Salary, City
+FROM employees
+WHERE Is_active = true AND Salary > 60000;
+```
+
+#### B. Querying a View
+Querying a view is identical to querying a normal table.
+```sql
+SELECT * FROM active_high_earners WHERE City = 'Mumbai';
+```
+
+#### C. Show All Views
+To list all the views created in the current database:
+
+* **In MySQL:**
+  ```sql
+  -- Lists all tables and views, indicating their types
+  SHOW FULL TABLES WHERE Table_type = 'VIEW';
+  ```
+* **In PostgreSQL:**
+  ```sql
+  -- Lists all views in the current schema
+  SELECT table_name FROM information_schema.views WHERE table_schema = 'public';
+  ```
+* **In SQL Server:**
+  ```sql
+  -- Lists all user-defined views
+  SELECT name FROM sys.views;
+  ```
