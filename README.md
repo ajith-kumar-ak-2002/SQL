@@ -758,3 +758,15 @@ To list all the views created in the current database:
   -- Lists all user-defined views
   SELECT name FROM sys.views;
   ```
+
+#### D. Delete (Drop) a View
+Removes the view from the database without affecting the underlying data in the base tables.
+```sql
+DROP VIEW view_name;
+```
+
+**Example:**
+```sql
+DROP VIEW active_high_earners;
+```
+```
