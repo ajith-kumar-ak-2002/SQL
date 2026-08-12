@@ -656,3 +656,60 @@ HAVING COUNT(Id) > 5;
 ```
 
 ---
+
+## 16. Set Operations: UNION & UNION ALL
+
+The `UNION` and `UNION ALL` operators are used to combine the result-sets of two or more `SELECT` statements into a single result-set.
+
+### 📋 Rules for Union Operations:
+1. Each `SELECT` statement within the union must have the **same number of columns**.
+2. The columns must also have **similar data types**.
+3. The columns in each `SELECT` statement must be in the **same order**.
+
+### 🔄 Difference Between UNION and UNION ALL
+* **`UNION`**: Combines the results and **removes duplicate rows** (only returns distinct values).
+* **`UNION ALL`**: Combines the results and **retains all rows**, including duplicates (faster than `UNION` because it doesn't perform duplicate checking).
+
+### 📝 Syntax
+```sql
+-- Returns distinct values
+SELECT column_name(s) FROM table1
+UNION
+SELECT column_name(s) FROM table2;
+
+-- Returns all values (including duplicates)
+SELECT column_name(s) FROM table1
+UNION ALL
+SELECT column_name(s) FROM table2;
+```
+
+### 💡 Example
+Suppose we have a `customers` table and a `suppliers` table, both containing `City` information:
+
+```sql
+-- Find all unique cities where customers and suppliers are located
+SELECT City FROM customers
+UNION
+SELECT City FROM suppliers
+ORDER BY City;
+
+-- Find all cities (including duplicates if both a customer and supplier are in the same city)
+SELECT City FROM customers
+UNION ALL
+SELECT City FROM suppliers
+ORDER BY City;
+```
+
+---
+
+## 17. SQL Views
+
+A **View** is a virtual table in SQL that is based on the result-set of an SQL statement. It contains rows and columns just like a real table, but it does not store the data physically. Instead, it dynamically retrieves the data from the underlying tables (known as base tables) whenever it is queried.
+
+### 🛡️ Advantages of Views
+1. **Simplicity:** Simplifies complex queries. Instead of writing complex joins or subqueries repeatedly, you can create a view and query it like a simple table.
+2. **Security:** Restricts data access. You can expose only specific columns or rows of a table to certain users while hiding sensitive data (e.g., hiding salary details or passwords).
+3. **Consistency:** Provides a consistent structure. Even if the underlying table structure changes, the view can remain the same (by mapping columns accordingly), preventing external applications from breaking.
+4. **Data Integrity:** You can create read-only views to prevent users from accidentally modifying database records.
+
+---
