@@ -769,4 +769,8 @@ DROP VIEW view_name;
 ```sql
 DROP VIEW active_high_earners;
 ```
-```
+---
+
+## 18. SQL Indexes
+
+An **Index** is a performance tuning tool used in databases to speed up the retrieval of records. It works like the index at the back of a textbook: instead of searching every page of the book (performing a Full Table Scan), the database looks up the terms in the index to find the exact pages (rows) where the data resides.
