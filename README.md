@@ -742,23 +742,10 @@ SELECT * FROM active_high_earners WHERE City = 'Mumbai';
 ```
 
 #### C. Show All Views
-To list all the views created in the current database:
-
-* **In MySQL:**
-  ```sql
-  -- Lists all tables and views, indicating their types
-  SHOW FULL TABLES WHERE Table_type = 'VIEW';
-  ```
-* **In PostgreSQL:**
-  ```sql
-  -- Lists all views in the current schema
-  SELECT table_name FROM information_schema.views WHERE table_schema = 'public';
-  ```
-* **In SQL Server:**
-  ```sql
-  -- Lists all user-defined views
-  SELECT name FROM sys.views;
-  ```
+```sql
+-- Lists all tables and views, indicating their types
+SHOW FULL TABLES WHERE Table_type = 'VIEW';
+```
 
 #### D. Delete (Drop) a View
 Removes the view from the database without affecting the underlying data in the base tables.
@@ -822,29 +809,12 @@ CREATE INDEX idx_city_status ON employees (City, Is_active);
 ```
 
 #### B. Show All Indexes on a Table
-To inspect existing indexes on a table:
-
-* **In MySQL:**
-  ```sql
-  SHOW INDEX FROM table_name;
-  ```
-* **In PostgreSQL:**
-  ```sql
-  SELECT * FROM pg_indexes WHERE tablename = 'table_name';
-  ```
-* **In SQL Server:**
-  ```sql
-  EXEC sp_helpindex 'table_name';
-  ```
+```sql
+SHOW INDEX FROM table_name;
+```
 
 #### C. Delete (Drop) an Index
 Removes the index to free up disk space and improve DML performance.
-
-* **In MySQL:**
-  ```sql
-  ALTER TABLE table_name DROP INDEX index_name;
-  ```
-* **In PostgreSQL / SQL Server:**
-  ```sql
-  DROP INDEX index_name;
-  ```
+```sql
+ALTER TABLE table_name DROP INDEX index_name;
+```
