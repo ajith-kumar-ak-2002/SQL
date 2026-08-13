@@ -795,3 +795,54 @@ An **Index** is a performance tuning tool used in databases to speed up the retr
 4. **Unique Index:** Prevents duplicate values from being inserted into the indexed column(s).
 
 ---
+
+### 📝 Syntax & Examples
+
+#### A. Create an Index
+```sql
+-- Single-Column Index
+CREATE INDEX index_name ON table_name (column_name);
+
+-- Composite Index
+CREATE INDEX index_name ON table_name (column1, column2);
+
+-- Unique Index
+CREATE UNIQUE INDEX index_name ON table_name (column_name);
+```
+
+**Example:**
+```sql
+-- Create an index on the email column to speed up user lookups
+CREATE INDEX idx_email ON employees (Email);
+
+-- Create a composite index for querying employees by city and active status
+CREATE INDEX idx_city_status ON employees (City, Is_active);
+```
+
+#### B. Show All Indexes on a Table
+To inspect existing indexes on a table:
+
+* **In MySQL:**
+  ```sql
+  SHOW INDEX FROM table_name;
+  ```
+* **In PostgreSQL:**
+  ```sql
+  SELECT * FROM pg_indexes WHERE tablename = 'table_name';
+  ```
+* **In SQL Server:**
+  ```sql
+  EXEC sp_helpindex 'table_name';
+  ```
+
+#### C. Delete (Drop) an Index
+Removes the index to free up disk space and improve DML performance.
+
+* **In MySQL:**
+  ```sql
+  ALTER TABLE table_name DROP INDEX index_name;
+  ```
+* **In PostgreSQL / SQL Server:**
+  ```sql
+  DROP INDEX index_name;
+  ```
