@@ -24,6 +24,7 @@ Inside, you will find detailed explanations, command syntaxes, and conceptual wr
 15. [Grouping Data: GROUP BY & HAVING](#15-grouping-data-group-by--having)
 16. [Set Operations: UNION & UNION ALL](#16-set-operations-union--union-all)
 17. [SQL Views](#17-sql-views)
+18. [SQL Indexes](#18-sql-indexes)
 
 ---
 
@@ -769,6 +770,7 @@ DROP VIEW view_name;
 ```sql
 DROP VIEW active_high_earners;
 ```
+
 ---
 
 ## 18. SQL Indexes
