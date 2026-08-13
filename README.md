@@ -774,3 +774,15 @@ DROP VIEW active_high_earners;
 ## 18. SQL Indexes
 
 An **Index** is a performance tuning tool used in databases to speed up the retrieval of records. It works like the index at the back of a textbook: instead of searching every page of the book (performing a Full Table Scan), the database looks up the terms in the index to find the exact pages (rows) where the data resides.
+
+### 🛡️ Pros & Cons of Indexes
+
+#### Advantages:
+1. **Faster Data Retrieval:** Speeds up `SELECT` queries, especially those with `WHERE` clauses, `JOIN` conditions, and `ORDER BY` operations.
+2. **Uniqueness Enforcement:** Unique indexes prevent duplicate values in a column.
+
+#### Disadvantages:
+1. **Slower DML Operations:** Every time a row is inserted, updated, or deleted, the index must also be updated. This adds overhead to `INSERT`, `UPDATE`, and `DELETE` commands.
+2. **Storage Space:** Indexes require additional physical disk space to store their pointer structures (typically B-Tree structures).
+
+---
