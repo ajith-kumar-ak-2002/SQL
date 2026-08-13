@@ -786,3 +786,12 @@ An **Index** is a performance tuning tool used in databases to speed up the retr
 2. **Storage Space:** Indexes require additional physical disk space to store their pointer structures (typically B-Tree structures).
 
 ---
+
+### 📋 Types of Indexes
+
+1. **Implicit Index:** Automatically created by the RDBMS when a table is created with a `PRIMARY KEY` or `UNIQUE` constraint.
+2. **Single-Column Index:** Created on a single column of a table.
+3. **Composite (Multiple-Column) Index:** Created on two or more columns of a table. Useful when queries regularly filter on multiple fields together.
+4. **Unique Index:** Prevents duplicate values from being inserted into the indexed column(s).
+
+---
