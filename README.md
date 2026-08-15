@@ -1131,3 +1131,11 @@ WHERE EXISTS (
 ## 20. SQL Stored Procedures
 
 A **Stored Procedure** is a prepared SQL code block that you can save and reuse. Instead of writing the same query repeatedly, you can compile it as a stored procedure and execute it with a simple call.
+
+### 🌟 Key Benefits
+1. **Performance:** Stored procedures are compiled once and stored in cache. Subsequent executions are faster.
+2. **Reduced Network Traffic:** Instead of sending multiple query strings, the application only sends the procedure name and parameters.
+3. **Security:** Restricts users from directly accessing tables; permissions can be granted only on the execution of the procedure.
+4. **Code Reusability & Maintenance:** Centralizes business logic so that changes only need to be made in one place.
+
+---
