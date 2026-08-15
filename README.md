@@ -844,3 +844,58 @@ Returns multiple values in a single column. It is used with multi-value comparis
 * **`IN`**: Returns true if a value matches any value in the subquery results.
 * **`ANY` / `SOME`**: Returns true if the comparison is true for at least one value returned by the subquery.
 * **`ALL`**: Returns true if the comparison is true for all values returned by the subquery.
+
+**Example (IN):** Find departments that have at least one employee:
+```sql
+SELECT Dept_Name 
+FROM departments 
+WHERE Dept_Id IN (SELECT DISTINCT Dept_Id FROM employees WHERE Dept_Id IS NOT NULL);
+```
+
+**Example (ALL):** Find employees who earn more than every employee working in 'Mumbai':
+```sql
+SELECT Name, Salary 
+FROM employees 
+WHERE Salary > ALL (SELECT Salary FROM employees WHERE City = 'Mumbai');
+```
+
+#### 3. Correlated Subquery
+A subquery that references one or more columns from the outer query. It is executed repeatedly, once for each row processed by the outer query.
+
+**Example:** Find employees who earn more than the average salary of their respective city:
+```sql
+SELECT e1.Name, e1.City, e1.Salary
+FROM employees e1
+WHERE e1.Salary > (
+    SELECT AVG(e2.Salary) 
+    FROM employees e2 
+    WHERE e2.City = e1.City
+);
+```
+
+#### 4. Subquery in FROM Clause (Derived Tables / Inline Views)
+A subquery can be used in the `FROM` clause, acting as a temporary table. You **must** assign an alias to a subquery in the `FROM` clause.
+
+**Example:** Find the maximum average salary among all cities:
+```sql
+SELECT MAX(avg_sal) AS max_city_avg
+FROM (
+    SELECT City, AVG(Salary) AS avg_sal 
+    FROM employees 
+    GROUP BY City
+) AS city_salaries;
+```
+
+#### 5. EXISTS & NOT EXISTS
+Checks for the presence or absence of rows returned by a subquery. It returns a boolean (`TRUE` or `FALSE`). It is highly efficient because it stops scanning as soon as the first match is found.
+
+**Example (EXISTS):** Find employees who belong to a valid department:
+```sql
+SELECT Name 
+FROM employees e 
+WHERE EXISTS (
+    SELECT 1 
+    FROM departments d 
+    WHERE d.Dept_Id = e.Dept_Id
+);
+```
