@@ -169,7 +169,81 @@ SELECT @item_price AS DiscountedPrice;
 
 
 -- --------------------------------------------------------------------
--- 5. MANAGING & DROP PROCEDURES
+-- 5. VARIABLES, SELECT INTO, IF-ELSE, & TRANSACTIONS
+-- --------------------------------------------------------------------
+-- This procedure simulates purchasing a product:
+-- - Uses DECLARE for local variables.
+-- - Uses SELECT ... INTO to fetch stock and price.
+-- - Uses IF-ELSE to verify stock.
+-- - Uses START TRANSACTION, COMMIT, and ROLLBACK to manage changes.
+
+DELIMITER //
+
+CREATE PROCEDURE PurchaseProduct(
+    IN p_id INT,
+    IN req_quantity INT,
+    OUT status_msg VARCHAR(100)
+)
+BEGIN
+    -- Declare local variables inside the procedure
+    DECLARE current_stock INT;
+    DECLARE item_price DECIMAL(10,2);
+    DECLARE total_cost DECIMAL(10,2);
+
+    -- Fetch values using SELECT ... INTO
+    SELECT stock_quantity, price 
+    INTO current_stock, item_price 
+    FROM products 
+    WHERE product_id = p_id;
+
+    -- IF-ELSE Conditional Logic
+    IF current_stock IS NULL THEN
+        SET status_msg = 'Failure: Product does not exist.';
+        
+    ELSEIF current_stock >= req_quantity THEN
+        -- Calculate total cost
+        SET total_cost = item_price * req_quantity;
+        
+        -- Start Transaction Control
+        START TRANSACTION;
+        
+        -- Deduct stock
+        UPDATE products 
+        SET stock_quantity = stock_quantity - req_quantity 
+        WHERE product_id = p_id;
+        
+        -- Check logic: If total cost is too high (e.g., limit of 150,000 for safety), rollback!
+        IF total_cost > 150000.00 THEN
+            ROLLBACK;
+            SET status_msg = 'Transaction Rolled Back: Purchase exceeds safety limit of 150,000.';
+        ELSE
+            COMMIT;
+            SET status_msg = CONCAT('Success! Purchased ', req_quantity, ' items. Total Cost: ', total_cost);
+        END IF;
+        
+    ELSE
+        SET status_msg = CONCAT('Failure: Not enough stock. Available: ', current_stock);
+    END IF;
+END //
+
+DELIMITER ;
+
+-- How to call:
+-- Case 1: Valid purchase
+CALL PurchaseProduct(2, 5, @msg1);
+SELECT @msg1;
+
+-- Case 2: Insufficient stock
+CALL PurchaseProduct(3, 100, @msg2);
+SELECT @msg2;
+
+-- Case 3: Exceeds safety transaction limit (triggers rollback)
+CALL PurchaseProduct(1, 2, @msg3); -- Laptop is 85,000 * 2 = 170,000
+SELECT @msg3;
+
+
+-- --------------------------------------------------------------------
+-- 6. MANAGING & DROP PROCEDURES
 -- --------------------------------------------------------------------
 
 -- Show all stored procedures in the current database
@@ -186,6 +260,7 @@ DROP PROCEDURE IF EXISTS DeleteProduct;
 DROP PROCEDURE IF EXISTS GetProductsByCategory;
 DROP PROCEDURE IF EXISTS GetProductCountByCategory;
 DROP PROCEDURE IF EXISTS ApplyDiscount;
+DROP PROCEDURE IF EXISTS PurchaseProduct;
 
 -- Clean up table
 DROP TABLE products;

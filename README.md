@@ -1137,7 +1137,10 @@ A **Stored Procedure** is a prepared SQL code block that you can save and reuse.
 2. **`CALL procedure`**
 3. **`INSERT`, `SELECT`, `UPDATE`, and `DELETE` inside a procedure**
 4. **`IN`, `OUT`, and `INOUT` parameters**
-5. **`DROP PROCEDURE`**
+5. **`IF, ELSE` Control Flow**
+6. **`DECLARE` local variables & `SELECT INTO`**
+7. **`Transactions` (COMMIT & ROLLBACK)**
+8. **`DROP PROCEDURE`**
 
 ---
 
@@ -1321,6 +1324,75 @@ SELECT @item_price AS DiscountedPrice;
 
 ---
 
+#### D. Control Flow, Variables, SELECT INTO, and Transactions
+Demonstrates how to use local variables, conditional checking (`IF-ELSE`), fetching values (`SELECT ... INTO`), and managing database changes safely with transaction blocks (`START TRANSACTION`, `COMMIT`, `ROLLBACK`).
+
+**Creation:**
+```sql
+DELIMITER //
+
+CREATE PROCEDURE PurchaseProduct(
+    IN p_id INT,
+    IN req_quantity INT,
+    OUT status_msg VARCHAR(100)
+)
+BEGIN
+    -- 1. Declare local variables
+    DECLARE current_stock INT;
+    DECLARE item_price DECIMAL(10,2);
+    DECLARE total_cost DECIMAL(10,2);
+
+    -- 2. Fetch stock and price into variables
+    SELECT stock_quantity, price 
+    INTO current_stock, item_price 
+    FROM products 
+    WHERE product_id = p_id;
+
+    -- 3. IF-ELSE Control Flow
+    IF current_stock IS NULL THEN
+        SET status_msg = 'Failure: Product does not exist.';
+        
+    ELSEIF current_stock >= req_quantity THEN
+        SET total_cost = item_price * req_quantity;
+        
+        -- 4. Transaction Block
+        START TRANSACTION;
+        
+        -- Deduct product stock
+        UPDATE products 
+        SET stock_quantity = stock_quantity - req_quantity 
+        WHERE product_id = p_id;
+        
+        -- If purchase total is too high (safety limit), rollback!
+        IF total_cost > 150000.00 THEN
+            ROLLBACK;
+            SET status_msg = 'Transaction Rolled Back: Purchase exceeds safety limit of 150,000.';
+        ELSE
+            COMMIT;
+            SET status_msg = CONCAT('Success! Purchased ', req_quantity, ' items. Total Cost: ', total_cost);
+        END IF;
+        
+    ELSE
+        SET status_msg = CONCAT('Failure: Not enough stock. Available: ', current_stock);
+    END IF;
+END //
+
+DELIMITER ;
+```
+
+**Execution:**
+```sql
+-- Valid Transaction:
+CALL PurchaseProduct(2, 5, @msg);
+SELECT @msg;
+
+-- Invalid Transaction (Triggering Rollback due to Safety Limit):
+CALL PurchaseProduct(1, 2, @msg); -- 85,000 * 2 = 170,000
+SELECT @msg;
+```
+
+---
+
 ### ⚙️ Administrative & Drop Commands
 
 #### View Existing Stored Procedures
@@ -1341,4 +1413,5 @@ DROP PROCEDURE IF EXISTS DeleteProduct;
 DROP PROCEDURE IF EXISTS GetProductsByCategory;
 DROP PROCEDURE IF EXISTS GetProductCountByCategory;
 DROP PROCEDURE IF EXISTS ApplyDiscount;
+DROP PROCEDURE IF EXISTS PurchaseProduct;
 ```
