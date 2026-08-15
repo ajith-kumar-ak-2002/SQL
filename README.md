@@ -820,3 +820,8 @@ Removes the index to free up disk space and improve DML performance.
 ALTER TABLE table_name DROP INDEX index_name;
 ```
 
+---
+
+## 19. SQL Subqueries
+
+A **Subquery** (or nested query) is a query within another SQL query. It is embedded inside the `WHERE`, `HAVING`, `FROM`, or `SELECT` clause of an outer query. Subqueries are executed first, and their results are passed to the outer query to filter or compute values.
