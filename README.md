@@ -1125,3 +1125,8 @@ WHERE EXISTS (
 | IT |
 
 
+---
+
+## 20. SQL Stored Procedures
+
+A **Stored Procedure** is a prepared SQL code block that you can save and reuse. Instead of writing the same query repeatedly, you can compile it as a stored procedure and execute it with a simple call.
