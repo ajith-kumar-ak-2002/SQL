@@ -825,3 +825,22 @@ ALTER TABLE table_name DROP INDEX index_name;
 ## 19. SQL Subqueries
 
 A **Subquery** (or nested query) is a query within another SQL query. It is embedded inside the `WHERE`, `HAVING`, `FROM`, or `SELECT` clause of an outer query. Subqueries are executed first, and their results are passed to the outer query to filter or compute values.
+
+### 📋 Types of Subqueries
+
+#### 1. Single-Row Subquery
+Returns only a single row and single column (scalar value). It is used with standard comparison operators (`=`, `>`, `<`, `>=`, `<=`, `!=`).
+
+**Example:** Find employees who earn more than the average salary:
+```sql
+SELECT Name, Salary 
+FROM employees 
+WHERE Salary > (SELECT AVG(Salary) FROM employees);
+```
+
+#### 2. Multi-Row Subquery
+Returns multiple values in a single column. It is used with multi-value comparison operators (`IN`, `ANY`, `ALL`, `EXISTS`).
+
+* **`IN`**: Returns true if a value matches any value in the subquery results.
+* **`ANY` / `SOME`**: Returns true if the comparison is true for at least one value returned by the subquery.
+* **`ALL`**: Returns true if the comparison is true for all values returned by the subquery.
