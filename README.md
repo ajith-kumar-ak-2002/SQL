@@ -27,6 +27,7 @@ Inside, you will find detailed explanations, command syntaxes, and conceptual wr
 18. [SQL Indexes](#18-sql-indexes)
 19. [SQL Subqueries](#19-sql-subqueries)
 20. [SQL Stored Procedures](#20-sql-stored-procedures)
+21. [SQL Triggers](#21-sql-triggers)
 
 ---
 
@@ -1414,4 +1415,167 @@ DROP PROCEDURE IF EXISTS GetProductsByCategory;
 DROP PROCEDURE IF EXISTS GetProductCountByCategory;
 DROP PROCEDURE IF EXISTS ApplyDiscount;
 DROP PROCEDURE IF EXISTS PurchaseProduct;
+```
+
+---
+
+## 21. SQL Triggers
+
+A **Trigger** is a database object that automatically runs (fires) in response to certain events (such as `INSERT`, `UPDATE`, or `DELETE` statements) occurring on a specific table.
+
+### 🌟 Key Concepts
+1. **Automatic Execution:** Triggers do not need to be called manually (unlike stored procedures). They are automatically invoked by the database server when the triggering event occurs.
+2. **Old & New Modifiers**:
+   - **`NEW`**: Refers to the incoming/newly-inserted row values during `INSERT` and `UPDATE` events.
+   - **`OLD`**: Refers to the existing/pre-updated row values during `UPDATE` and `DELETE` events.
+
+---
+
+### 📝 Trigger Classifications
+
+Triggers are classified by **When** they fire and **What** event fires them:
+
+| Event Type | Trigger Options | Common Use Case |
+| :--- | :--- | :--- |
+| **`INSERT`** | `BEFORE INSERT` / `AFTER INSERT` | Data validation/normalization, inserting audit trail log. |
+| **`UPDATE`** | `BEFORE UPDATE` / `AFTER UPDATE` | Auditing historical values (e.g. logging salary changes). |
+| **`DELETE`** | `BEFORE DELETE` / `AFTER DELETE` | Restricting delete operations, archiving records into history tables. |
+
+---
+
+### 💻 Syntax & Examples
+
+#### A. BEFORE INSERT Trigger
+Used to modify or validate incoming records before they are saved to the database.
+
+**Creation:**
+```sql
+DELIMITER //
+
+CREATE TRIGGER before_employee_insert
+BEFORE INSERT ON employees
+FOR EACH ROW
+BEGIN
+    -- Force name to uppercase
+    SET NEW.emp_name = UPPER(NEW.emp_name);
+    
+    -- Validate salary
+    IF NEW.salary < 0 THEN
+        SET NEW.salary = 0.00;
+    END IF;
+END //
+
+DELIMITER ;
+```
+
+**Testing:**
+```sql
+INSERT INTO employees (emp_name, salary) VALUES ('amit sharma', -5000.00);
+-- Result: Inserts name as 'AMIT SHARMA' and resets salary to 0.00.
+```
+
+---
+
+#### B. AFTER INSERT Trigger
+Fires after a record is successfully created. Useful for maintaining audit trails.
+
+**Creation:**
+```sql
+DELIMITER //
+
+CREATE TRIGGER after_employee_insert
+AFTER INSERT ON employees
+FOR EACH ROW
+BEGIN
+    -- Write history to audit log table
+    INSERT INTO emp_audit_log (emp_id, action)
+    VALUES (NEW.emp_id, 'Employee Inserted');
+END //
+
+DELIMITER ;
+```
+
+**Testing:**
+```sql
+INSERT INTO employees (emp_name, salary) VALUES ('Rahul Verma', 65000.00);
+-- Result: Automatically adds a log in `emp_audit_log` with the new employee's ID.
+```
+
+---
+
+#### C. AFTER UPDATE Trigger
+Captures data before and after changes are applied. Useful for change tracking.
+
+**Creation:**
+```sql
+DELIMITER //
+
+CREATE TRIGGER after_salary_update
+AFTER UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    -- Audit salary changes
+    IF OLD.salary <> NEW.salary THEN
+        INSERT INTO salary_history (emp_id, old_salary, new_salary)
+        VALUES (NEW.emp_id, OLD.salary, NEW.salary);
+    END IF;
+END //
+
+DELIMITER ;
+```
+
+**Testing:**
+```sql
+UPDATE employees SET salary = 72000.00 WHERE emp_name = 'RAHUL VERMA';
+-- Result: Captures old salary (65k) and new salary (72k) in `salary_history`.
+```
+
+---
+
+#### D. BEFORE DELETE Trigger
+Fires before records are deleted. Can be used to enforce business rules or prevent accidental deletions.
+
+**Creation:**
+```sql
+DELIMITER //
+
+CREATE TRIGGER before_employee_delete
+BEFORE DELETE ON employees
+FOR EACH ROW
+BEGIN
+    -- Block deletion if status is active
+    IF OLD.status = 'Active' THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Error: Cannot delete active employee.';
+    END IF;
+END //
+
+DELIMITER ;
+```
+
+**Testing:**
+```sql
+DELETE FROM employees WHERE emp_id = 2;
+-- Result: Fails with customized error message.
+```
+
+---
+
+### ⚙️ Administrative Commands
+
+#### View Existing Triggers
+```sql
+-- Show all triggers in current database
+SHOW TRIGGERS;
+
+-- View creation statement of a specific trigger
+SHOW CREATE TRIGGER after_salary_update;
+```
+
+#### Drop Triggers
+```sql
+DROP TRIGGER IF EXISTS before_employee_insert;
+DROP TRIGGER IF EXISTS after_employee_insert;
+DROP TRIGGER IF EXISTS after_salary_update;
+DROP TRIGGER IF EXISTS before_employee_delete;
 ```
