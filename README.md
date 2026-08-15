@@ -1131,11 +1131,13 @@ WHERE EXISTS (
 
 A **Stored Procedure** is a prepared SQL code block that you can save and reuse. Instead of writing the same query repeatedly, you can compile it as a stored procedure and execute it with a simple call.
 
-### 🌟 Key Benefits
-1. **Performance:** Stored procedures are compiled once and stored in cache. Subsequent executions are faster.
-2. **Reduced Network Traffic:** Instead of sending multiple query strings, the application only sends the procedure name and parameters.
-3. **Security:** Restricts users from directly accessing tables; permissions can be granted only on the execution of the procedure.
-4. **Code Reusability & Maintenance:** Centralizes business logic so that changes only need to be made in one place.
+### 🌟 Key Concepts Covered
+
+1. **`CREATE PROCEDURE` & `DELIMITER` usage**
+2. **`CALL procedure`**
+3. **`INSERT`, `SELECT`, `UPDATE`, and `DELETE` inside a procedure**
+4. **`IN`, `OUT`, and `INOUT` parameters**
+5. **`DROP PROCEDURE`**
 
 ---
 
@@ -1154,10 +1156,11 @@ SQL procedures support three types of parameters:
 ### 💻 Syntax & Examples
 
 #### A. Basic Stored Procedure (No Parameters)
-Creates a procedure that simply displays all products.
+Demonstrates **`CREATE PROCEDURE`**, **`DELIMITER` usage**, **`SELECT`**, and **`CALL`**.
 
 **Creation:**
 ```sql
+-- Change delimiter to // to allow semicolons inside procedure block
 DELIMITER //
 
 CREATE PROCEDURE GetAllProducts()
@@ -1165,9 +1168,9 @@ BEGIN
     SELECT * FROM products;
 END //
 
+-- Reset delimiter back to semicolon
 DELIMITER ;
 ```
-*Note: We change the `DELIMITER` to `//` temporarily to define where the procedure block ends, then restore it back to `;`.*
 
 **Execution:**
 ```sql
@@ -1176,10 +1179,77 @@ CALL GetAllProducts();
 
 ---
 
-#### B. Procedure with `IN` Parameter
-Retrieves products that belong to a specific category.
+#### B. INSERT, UPDATE, and DELETE Inside Procedures
+Demonstrates how to perform DML operations inside stored procedures.
 
-**Creation:**
+##### 1. INSERT Inside Procedure
+```sql
+DELIMITER //
+
+CREATE PROCEDURE AddNewProduct(
+    IN p_name VARCHAR(100),
+    IN p_category VARCHAR(50),
+    IN p_price DECIMAL(10,2),
+    IN p_stock INT
+)
+BEGIN
+    INSERT INTO products (product_name, category, price, stock_quantity)
+    VALUES (p_name, p_category, p_price, p_stock);
+END //
+
+DELIMITER ;
+```
+*Usage:*
+```sql
+CALL AddNewProduct('Tablet', 'Electronics', 25000.00, 25);
+```
+
+##### 2. UPDATE Inside Procedure
+```sql
+DELIMITER //
+
+CREATE PROCEDURE UpdateProductStock(
+    IN p_id INT,
+    IN new_stock INT
+)
+BEGIN
+    UPDATE products 
+    SET stock_quantity = new_stock 
+    WHERE product_id = p_id;
+END //
+
+DELIMITER ;
+```
+*Usage:*
+```sql
+CALL UpdateProductStock(1, 18);
+```
+
+##### 3. DELETE Inside Procedure
+```sql
+DELIMITER //
+
+CREATE PROCEDURE DeleteProduct(
+    IN p_id INT
+)
+BEGIN
+    DELETE FROM products 
+    WHERE product_id = p_id;
+END //
+
+DELIMITER ;
+```
+*Usage:*
+```sql
+CALL DeleteProduct(6);
+```
+
+---
+
+#### C. Parameterized Procedures (`IN`, `OUT`, `INOUT`)
+
+##### 1. Procedure with `IN` Parameter
+Retrieves products that belong to a specific category.
 ```sql
 DELIMITER //
 
@@ -1191,18 +1261,13 @@ END //
 
 DELIMITER ;
 ```
-
-**Execution:**
+*Usage:*
 ```sql
 CALL GetProductsByCategory('Electronics');
 ```
 
----
-
-#### C. Procedure with `OUT` Parameter
-Counts the number of products in a category and returns it.
-
-**Creation:**
+##### 2. Procedure with `OUT` Parameter
+Counts products in a category and returns it using an `OUT` parameter.
 ```sql
 DELIMITER //
 
@@ -1218,22 +1283,17 @@ END //
 
 DELIMITER ;
 ```
-
-**Execution:**
+*Usage:*
 ```sql
--- 1. Call procedure and pass variable @total
-CALL GetProductCountByCategory('Apparel', @total);
+-- 1. Call and pass a session variable to receive output
+CALL GetProductCountByCategory('Electronics', @electronics_count);
 
--- 2. Select variable value
-SELECT @total AS TotalApparelProducts;
+-- 2. Select variable value to view
+SELECT @electronics_count AS TotalElectronics;
 ```
 
----
-
-#### D. Procedure with `INOUT` Parameter
-Applies a percentage discount to a price variable and returns the updated price.
-
-**Creation:**
+##### 3. Procedure with `INOUT` Parameter
+Applies a percentage discount directly to a price variable.
 ```sql
 DELIMITER //
 
@@ -1247,8 +1307,7 @@ END //
 
 DELIMITER ;
 ```
-
-**Execution:**
+*Usage:*
 ```sql
 -- 1. Initialize session variable
 SET @item_price = 1000.00;
@@ -1256,13 +1315,13 @@ SET @item_price = 1000.00;
 -- 2. Call procedure
 CALL ApplyDiscount(@item_price, 15.00);
 
--- 3. Query updated variable (Output: 850.00)
+-- 3. Query variable (Output: 850.00)
 SELECT @item_price AS DiscountedPrice;
 ```
 
 ---
 
-### ⚙️ Administrative Commands
+### ⚙️ Administrative & Drop Commands
 
 #### View Existing Stored Procedures
 ```sql
@@ -1270,164 +1329,16 @@ SELECT @item_price AS DiscountedPrice;
 SHOW PROCEDURE STATUS WHERE Db = DATABASE();
 
 -- View definition of a specific procedure
-SHOW CREATE PROCEDURE GetProductsByCategory;
+SHOW CREATE PROCEDURE GetAllProducts;
 ```
 
 #### Drop Stored Procedure
 ```sql
+DROP PROCEDURE IF EXISTS GetAllProducts;
+DROP PROCEDURE IF EXISTS AddNewProduct;
+DROP PROCEDURE IF EXISTS UpdateProductStock;
+DROP PROCEDURE IF EXISTS DeleteProduct;
 DROP PROCEDURE IF EXISTS GetProductsByCategory;
-```
-
-
----
-
-## 20. SQL Stored Procedures
-
-A **Stored Procedure** is a prepared SQL code block that you can save and reuse. Instead of writing the same query repeatedly, you can compile it as a stored procedure and execute it with a simple call.
-
-### 🌟 Key Benefits
-1. **Performance:** Stored procedures are compiled once and stored in cache. Subsequent executions are faster.
-2. **Reduced Network Traffic:** Instead of sending multiple query strings, the application only sends the procedure name and parameters.
-3. **Security:** Restricts users from directly accessing tables; permissions can be granted only on the execution of the procedure.
-4. **Code Reusability & Maintenance:** Centralizes business logic so that changes only need to be made in one place.
-
----
-
-### 📝 Parameter Types in Stored Procedures
-
-SQL procedures support three types of parameters:
-
-| Parameter Type | Direction | Description |
-| :--- | :--- | :--- |
-| **`IN`** | Caller $\rightarrow$ Procedure | Passes input values. Read-only inside the procedure. (Default type) |
-| **`OUT`** | Procedure $\rightarrow$ Caller | Passes output values back to the calling environment. |
-| **`INOUT`** | Caller $\leftrightarrow$ Procedure | Acts as both an input and an output variable. |
-
----
-
-### 💻 Syntax & Examples
-
-#### A. Basic Stored Procedure (No Parameters)
-Creates a procedure that simply displays all products.
-
-**Creation:**
-```sql
-DELIMITER //
-
-CREATE PROCEDURE GetAllProducts()
-BEGIN
-    SELECT * FROM products;
-END //
-
-DELIMITER ;
-```
-*Note: We change the `DELIMITER` to `//` temporarily to define where the procedure block ends, then restore it back to `;`.*
-
-**Execution:**
-```sql
-CALL GetAllProducts();
-```
-
----
-
-#### B. Procedure with `IN` Parameter
-Retrieves products that belong to a specific category.
-
-**Creation:**
-```sql
-DELIMITER //
-
-CREATE PROCEDURE GetProductsByCategory(IN category_name VARCHAR(50))
-BEGIN
-    SELECT * FROM products 
-    WHERE category = category_name;
-END //
-
-DELIMITER ;
-```
-
-**Execution:**
-```sql
-CALL GetProductsByCategory('Electronics');
-```
-
----
-
-#### C. Procedure with `OUT` Parameter
-Counts the number of products in a category and returns it.
-
-**Creation:**
-```sql
-DELIMITER //
-
-CREATE PROCEDURE GetProductCountByCategory(
-    IN category_name VARCHAR(50), 
-    OUT total_count INT
-)
-BEGIN
-    SELECT COUNT(*) INTO total_count 
-    FROM products 
-    WHERE category = category_name;
-END //
-
-DELIMITER ;
-```
-
-**Execution:**
-```sql
--- 1. Call procedure and pass variable @total
-CALL GetProductCountByCategory('Apparel', @total);
-
--- 2. Select variable value
-SELECT @total AS TotalApparelProducts;
-```
-
----
-
-#### D. Procedure with `INOUT` Parameter
-Applies a percentage discount to a price variable and returns the updated price.
-
-**Creation:**
-```sql
-DELIMITER //
-
-CREATE PROCEDURE ApplyDiscount(
-    INOUT price_value DECIMAL(10,2), 
-    IN discount_pct DECIMAL(5,2)
-)
-BEGIN
-    SET price_value = price_value - (price_value * (discount_pct / 100));
-END //
-
-DELIMITER ;
-```
-
-**Execution:**
-```sql
--- 1. Initialize session variable
-SET @item_price = 1000.00;
-
--- 2. Call procedure
-CALL ApplyDiscount(@item_price, 15.00);
-
--- 3. Query updated variable (Output: 850.00)
-SELECT @item_price AS DiscountedPrice;
-```
-
----
-
-### ⚙️ Administrative Commands
-
-#### View Existing Stored Procedures
-```sql
--- Show status of procedures in current database
-SHOW PROCEDURE STATUS WHERE Db = DATABASE();
-
--- View definition of a specific procedure
-SHOW CREATE PROCEDURE GetProductsByCategory;
-```
-
-#### Drop Stored Procedure
-```sql
-DROP PROCEDURE IF EXISTS GetProductsByCategory;
+DROP PROCEDURE IF EXISTS GetProductCountByCategory;
+DROP PROCEDURE IF EXISTS ApplyDiscount;
 ```

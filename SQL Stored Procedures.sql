@@ -2,7 +2,7 @@
 -- 📊 PRACTICE SCRIPT: SQL Stored Procedures
 -- ====================================================================
 
--- A Stored Procedure is a prepared SQL code block that you can save, 
+-- A Stored Procedure is a prepared SQL code block that you can save,
 -- so the code can be reused over and over again.
 
 -- --------------------------------------------------------------------
@@ -26,7 +26,7 @@ INSERT INTO products (product_name, category, price, stock_quantity) VALUES
 
 
 -- --------------------------------------------------------------------
--- 2. BASIC STORED PROCEDURE (No Parameters)
+-- 2. CREATE PROCEDURE, CALL, AND DELIMITER USAGE
 -- --------------------------------------------------------------------
 -- The DELIMITER command is used to change the standard delimiter (semicolon) 
 -- to something else (like //) so that we can write semicolons inside the procedure.
@@ -35,20 +35,81 @@ DELIMITER //
 
 CREATE PROCEDURE GetAllProducts()
 BEGIN
+    -- SELECT inside a procedure
     SELECT * FROM products;
 END //
 
 DELIMITER ;
 
--- How to call:
+-- How to call a procedure:
 CALL GetAllProducts();
 
 
 -- --------------------------------------------------------------------
--- 3. STORED PROCEDURE WITH "IN" PARAMETER
+-- 3. INSERT, UPDATE, AND DELETE INSIDE PROCEDURES
 -- --------------------------------------------------------------------
--- IN parameter: Passes a value into the procedure. The value is read-only inside.
 
+-- A. INSERT Operation Inside Procedure
+DELIMITER //
+
+CREATE PROCEDURE AddNewProduct(
+    IN p_name VARCHAR(100),
+    IN p_category VARCHAR(50),
+    IN p_price DECIMAL(10,2),
+    IN p_stock INT
+)
+BEGIN
+    INSERT INTO products (product_name, category, price, stock_quantity)
+    VALUES (p_name, p_category, p_price, p_stock);
+END //
+
+DELIMITER ;
+
+-- Call the Insert procedure:
+CALL AddNewProduct('Tablet', 'Electronics', 25000.00, 25);
+
+
+-- B. UPDATE Operation Inside Procedure
+DELIMITER //
+
+CREATE PROCEDURE UpdateProductStock(
+    IN p_id INT,
+    IN new_stock INT
+)
+BEGIN
+    UPDATE products 
+    SET stock_quantity = new_stock 
+    WHERE product_id = p_id;
+END //
+
+DELIMITER ;
+
+-- Call the Update procedure:
+CALL UpdateProductStock(1, 18); -- Updates Laptop stock to 18
+
+
+-- C. DELETE Operation Inside Procedure
+DELIMITER //
+
+CREATE PROCEDURE DeleteProduct(
+    IN p_id INT
+)
+BEGIN
+    DELETE FROM products 
+    WHERE product_id = p_id;
+END //
+
+DELIMITER ;
+
+-- Call the Delete procedure:
+CALL DeleteProduct(6); -- Deletes Backpack (ID 6)
+
+
+-- --------------------------------------------------------------------
+-- 4. PARAMETERS IN-DEPTH: IN, OUT, AND INOUT
+-- --------------------------------------------------------------------
+
+-- A. IN Parameter (Passes read-only input value to the procedure)
 DELIMITER //
 
 CREATE PROCEDURE GetProductsByCategory(IN category_name VARCHAR(50))
@@ -59,16 +120,11 @@ END //
 
 DELIMITER ;
 
--- How to call:
+-- Call with IN:
 CALL GetProductsByCategory('Electronics');
-CALL GetProductsByCategory('Furniture');
 
 
--- --------------------------------------------------------------------
--- 4. STORED PROCEDURE WITH "OUT" PARAMETER
--- --------------------------------------------------------------------
--- OUT parameter: Returns a value from the procedure back to the caller.
-
+-- B. OUT Parameter (Returns a value from the procedure back to the caller)
 DELIMITER //
 
 CREATE PROCEDURE GetProductCountByCategory(
@@ -83,20 +139,14 @@ END //
 
 DELIMITER ;
 
--- How to call:
--- 1. Declare a session variable to store the output (e.g., @apparel_count)
--- 2. Call the procedure
--- 3. Select the session variable to see the result
-CALL GetProductCountByCategory('Apparel', @apparel_count);
-SELECT @apparel_count AS TotalApparelProducts;
+-- Call with OUT:
+-- 1. Call and pass a session variable to capture output
+CALL GetProductCountByCategory('Electronics', @electronics_count);
+-- 2. Select variable value to view output
+SELECT @electronics_count AS TotalElectronics;
 
 
--- --------------------------------------------------------------------
--- 5. STORED PROCEDURE WITH "INOUT" PARAMETER
--- --------------------------------------------------------------------
--- INOUT parameter: Passes a value in, allows the procedure to modify it, 
--- and returns the updated value back to the caller.
-
+-- C. INOUT Parameter (Passes input value, modifies it, and returns updated value)
 DELIMITER //
 
 CREATE PROCEDURE ApplyDiscount(
@@ -109,32 +159,33 @@ END //
 
 DELIMITER ;
 
--- How to call:
--- 1. Initialize a session variable with the original price
+-- Call with INOUT:
+-- 1. Initialize session variable
 SET @item_price = 1000.00;
-
--- 2. Call the procedure to apply a 15% discount
+-- 2. Call procedure
 CALL ApplyDiscount(@item_price, 15.00);
-
--- 3. Check the modified value of the session variable (Expected: 850.00)
+-- 3. Query variable (Output: 850.00)
 SELECT @item_price AS DiscountedPrice;
 
 
 -- --------------------------------------------------------------------
--- 6. MANAGING STORED PROCEDURES (Status & Drop)
+-- 5. MANAGING & DROP PROCEDURES
 -- --------------------------------------------------------------------
 
--- Show list of all stored procedures in the current database
+-- Show all stored procedures in the current database
 SHOW PROCEDURE STATUS WHERE Db = DATABASE();
 
--- Show the creation statement of a specific procedure
-SHOW CREATE PROCEDURE GetProductsByCategory;
+-- Show the creation query for a specific procedure
+SHOW CREATE PROCEDURE GetAllProducts;
 
--- Deleting (dropping) a stored procedure
+-- DROP PROCEDURE Examples:
 DROP PROCEDURE IF EXISTS GetAllProducts;
+DROP PROCEDURE IF EXISTS AddNewProduct;
+DROP PROCEDURE IF EXISTS UpdateProductStock;
+DROP PROCEDURE IF EXISTS DeleteProduct;
 DROP PROCEDURE IF EXISTS GetProductsByCategory;
 DROP PROCEDURE IF EXISTS GetProductCountByCategory;
 DROP PROCEDURE IF EXISTS ApplyDiscount;
 
--- Clean up
+-- Clean up table
 DROP TABLE products;
