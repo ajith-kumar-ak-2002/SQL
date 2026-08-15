@@ -889,13 +889,239 @@ FROM (
 #### 5. EXISTS & NOT EXISTS
 Checks for the presence or absence of rows returned by a subquery. It returns a boolean (`TRUE` or `FALSE`). It is highly efficient because it stops scanning as soon as the first match is found.
 
-**Example (EXISTS):** Find employees who belong to a valid department:
-```sql
-SELECT Name 
-FROM employees e 
-WHERE EXISTS (
-    SELECT 1 
-    FROM departments d 
-    WHERE d.Dept_Id = e.Dept_Id
 );
 ```
+
+---
+
+### 📊 Hands-On Walkthrough: Sample Dataset & Query Executions
+
+To help you visualize how these subqueries function, let's use a sample dataset of two tables: `departments` and `employees`.
+
+#### 1. Setup the Database and Insert Data
+
+```sql
+-- Create departments table
+CREATE TABLE departments (
+    Dept_Id INT PRIMARY KEY,
+    Dept_Name VARCHAR(50) NOT NULL,
+    Location VARCHAR(50) NOT NULL
+);
+
+-- Create employees table
+CREATE TABLE employees (
+    Emp_Id INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Job_Title VARCHAR(100),
+    Salary DECIMAL(10,2),
+    City VARCHAR(50),
+    Dept_Id INT,
+    FOREIGN KEY (Dept_Id) REFERENCES departments(Dept_Id)
+);
+
+-- Insert Sample Departments
+INSERT INTO departments (Dept_Id, Dept_Name, Location) VALUES
+(10, 'HR', 'Mumbai'),
+(20, 'IT', 'Bangalore'),
+(30, 'Sales', 'Mumbai'),
+(40, 'Finance', 'Delhi'),
+(50, 'Marketing', 'Bangalore');
+
+-- Insert Sample Employees
+INSERT INTO employees (Emp_Id, Name, Job_Title, Salary, City, Dept_Id) VALUES
+(101, 'Amit Sharma', 'Software Engineer', 85000.00, 'Bangalore', 20),
+(102, 'Priya Patel', 'HR Manager', 70000.00, 'Mumbai', 10),
+(103, 'Rajesh Kumar', 'Sales Executive', 50000.00, 'Mumbai', 30),
+(104, 'Sunita Rao', 'Data Analyst', 90000.00, 'Bangalore', 20),
+(105, 'Vikram Singh', 'Finance Analyst', 75000.00, 'Delhi', 40),
+(106, 'Ananya Sen', 'Software Engineer', 95000.00, 'Bangalore', 20),
+(107, 'Rahul Verma', 'Sales Executive', 48000.00, 'Delhi', 30),
+(108, 'Neha Gupta', 'HR Assistant', 45000.00, 'Mumbai', 10),
+(109, 'Siddharth Roy', 'Marketing Lead', 80000.00, 'Bangalore', 50),
+(110, 'Rohan Mehta', 'Intern', 25000.00, 'Mumbai', NULL);
+```
+
+#### 2. Visualizing our Tables
+
+**`departments` Table:**
+| Dept_Id | Dept_Name | Location |
+| :--- | :--- | :--- |
+| 10 | HR | Mumbai |
+| 20 | IT | Bangalore |
+| 30 | Sales | Mumbai |
+| 40 | Finance | Delhi |
+| 50 | Marketing | Bangalore |
+
+**`employees` Table:**
+| Emp_Id | Name | Job_Title | Salary | City | Dept_Id |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 101 | Amit Sharma | Software Engineer | 85000.00 | Bangalore | 20 |
+| 102 | Priya Patel | HR Manager | 70000.00 | Mumbai | 10 |
+| 103 | Rajesh Kumar | Sales Executive | 50000.00 | Mumbai | 30 |
+| 104 | Sunita Rao | Data Analyst | 90000.00 | Bangalore | 20 |
+| 105 | Vikram Singh | Finance Analyst | 75000.00 | Delhi | 40 |
+| 106 | Ananya Sen | Software Engineer | 95000.00 | Bangalore | 20 |
+| 107 | Rahul Verma | Sales Executive | 48000.00 | Delhi | 30 |
+| 108 | Neha Gupta | HR Assistant | 45000.00 | Mumbai | 10 |
+| 109 | Siddharth Roy | Marketing Lead | 80000.00 | Bangalore | 50 |
+| 110 | Rohan Mehta | Intern | 25000.00 | Mumbai | *NULL* |
+
+---
+
+#### 3. Step-by-Step Executions of Subquery Types
+
+##### A. Single-Row Subquery Example
+**Goal:** Find all employees who earn more than the average salary of the entire company.
+
+**Query:**
+```sql
+SELECT Name, Salary 
+FROM employees 
+WHERE Salary > (SELECT AVG(Salary) FROM employees);
+```
+
+**How it executes:**
+1. **Inner Query runs first:** `SELECT AVG(Salary) FROM employees` computes the average salary of all 10 employees, which is **`66,800.00`**.
+2. **Outer Query evaluates:** The query simplifies to `SELECT Name, Salary FROM employees WHERE Salary > 66800.00;`.
+3. **Result:**
+| Name | Salary |
+| :--- | :--- |
+| Amit Sharma | 85000.00 |
+| Priya Patel | 70000.00 |
+| Sunita Rao | 90000.00 |
+| Vikram Singh | 75000.00 |
+| Ananya Sen | 95000.00 |
+| Siddharth Roy | 80000.00 |
+
+---
+
+##### B. Multi-Row Subquery Example (using `IN`)
+**Goal:** Get details of all employees who work in departments located in 'Bangalore'.
+
+**Query:**
+```sql
+SELECT Name, Job_Title, Dept_Id 
+FROM employees 
+WHERE Dept_Id IN (SELECT Dept_Id FROM departments WHERE Location = 'Bangalore');
+```
+
+**How it executes:**
+1. **Inner Query runs first:** `SELECT Dept_Id FROM departments WHERE Location = 'Bangalore'` yields department IDs **`20`** (IT) and **`50`** (Marketing).
+2. **Outer Query evaluates:** The query simplifies to `SELECT Name, Job_Title, Dept_Id FROM employees WHERE Dept_Id IN (20, 50);`.
+3. **Result:**
+| Name | Job_Title | Dept_Id |
+| :--- | :--- | :--- |
+| Amit Sharma | Software Engineer | 20 |
+| Sunita Rao | Data Analyst | 20 |
+| Ananya Sen | Software Engineer | 20 |
+| Siddharth Roy | Marketing Lead | 50 |
+
+---
+
+##### C. Multi-Row Subquery Example (using `ALL`)
+**Goal:** Find employees who earn more than every employee working in 'Mumbai'.
+
+**Query:**
+```sql
+SELECT Name, Salary, City 
+FROM employees 
+WHERE Salary > ALL (SELECT Salary FROM employees WHERE City = 'Mumbai');
+```
+
+**How it executes:**
+1. **Inner Query runs first:** `SELECT Salary FROM employees WHERE City = 'Mumbai'` returns the set of salaries of Mumbai-based employees: `[70000.00, 50000.00, 45000.00, 25000.00]`.
+2. **Outer Query evaluates:** The condition `Salary > ALL (...)` requires the salary to be strictly greater than the maximum value in that set (i.e., `> 70000.00`).
+3. **Result:**
+| Name | Salary | City |
+| :--- | :--- | :--- |
+| Amit Sharma | 85000.00 | Bangalore |
+| Sunita Rao | 90000.00 | Bangalore |
+| Vikram Singh | 75000.00 | Delhi |
+| Ananya Sen | 95000.00 | Bangalore |
+| Siddharth Roy | 80000.00 | Bangalore |
+
+---
+
+##### D. Correlated Subquery Example
+**Goal:** Find employees who earn more than the average salary of *their own* department.
+
+**Query:**
+```sql
+SELECT e1.Name, e1.Dept_Id, e1.Salary
+FROM employees e1
+WHERE e1.Salary > (
+    SELECT AVG(e2.Salary) 
+    FROM employees e2 
+    WHERE e2.Dept_Id = e1.Dept_Id
+);
+```
+
+**How it executes:**
+For every employee row processed by the outer query (`e1`), the inner query evaluates the average salary of `e2` rows sharing the exact same `Dept_Id`:
+* **Amit Sharma** (IT, Dept 20, Salary 85k): The subquery finds the average for Dept 20 (IT: Amit 85k, Sunita 90k, Ananya 95k -> Avg = 90k). Since 85k is not `> 90k`, he is excluded.
+* **Ananya Sen** (IT, Dept 20, Salary 95k): 95k is `> 90k`, so she is included.
+* **Priya Patel** (HR, Dept 10, Salary 70k): The subquery finds the average for Dept 10 (HR: Priya 70k, Neha 45k -> Avg = 57.5k). Since 70k is `> 57.5k`, she is included.
+* **Rajesh Kumar** (Sales, Dept 30, Salary 50k): Sales average: Rajesh 50k, Rahul 48k -> Avg = 49k. 50k is `> 49k`, so Rajesh is included.
+* **Result:**
+| Name | Dept_Id | Salary |
+| :--- | :--- | :--- |
+| Priya Patel | 10 | 70000.00 |
+| Sunita Rao | 20 | 90000.00 |
+| Ananya Sen | 20 | 95000.00 |
+| Rajesh Kumar | 30 | 50000.00 |
+
+---
+
+##### E. Subquery in FROM Clause (Derived Table) Example
+**Goal:** Calculate the average salary for each department, then find the highest average salary among them.
+
+**Query:**
+```sql
+SELECT MAX(dept_avg.avg_salary) AS highest_department_average
+FROM (
+    SELECT Dept_Id, AVG(Salary) AS avg_salary 
+    FROM employees 
+    WHERE Dept_Id IS NOT NULL
+    GROUP BY Dept_Id
+) AS dept_avg;
+```
+
+**How it executes:**
+1. **Inner Query runs first** to build a temporary/derived table alias `dept_avg`:
+   - Dept 10 Average: 57,500.00
+   - Dept 20 Average: 90,000.00
+   - Dept 30 Average: 49,000.00
+   - Dept 40 Average: 75,000.00
+   - Dept 50 Average: 80,000.00
+2. **Outer Query evaluates:** Selects the maximum `avg_salary` from this derived table, which is **`90,000.00`**.
+3. **Result:**
+| highest_department_average |
+| :--- |
+| 90000.00 |
+
+---
+
+##### F. EXISTS Example
+**Goal:** Get the names of departments that have at least one employee earning more than 80,000.00.
+
+**Query:**
+```sql
+SELECT Dept_Name 
+FROM departments d 
+WHERE EXISTS (
+    SELECT 1 
+    FROM employees e 
+    WHERE e.Dept_Id = d.Dept_Id AND e.Salary > 80000.00
+);
+```
+
+**How it executes:**
+1. For each department `d`, it checks if any employee matches the condition.
+2. For Dept 20 (IT): Amit Sharma (85k), Sunita Rao (90k), and Ananya Sen (95k) match. `EXISTS` returns `TRUE`.
+3. For Dept 50 (Marketing): Siddharth Roy (80k) is not *strictly* greater than 80k. So `EXISTS` returns `FALSE`.
+4. **Result:**
+| Dept_Name |
+| :--- |
+| IT |
+
+
