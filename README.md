@@ -26,6 +26,7 @@ Inside, you will find detailed explanations, command syntaxes, and conceptual wr
 17. [SQL Views](#17-sql-views)
 18. [SQL Indexes](#18-sql-indexes)
 19. [SQL Subqueries](#19-sql-subqueries)
+20. [SQL Stored Procedures](#20-sql-stored-procedures)
 
 ---
 
