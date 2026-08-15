@@ -1139,3 +1139,15 @@ A **Stored Procedure** is a prepared SQL code block that you can save and reuse.
 4. **Code Reusability & Maintenance:** Centralizes business logic so that changes only need to be made in one place.
 
 ---
+
+### 📝 Parameter Types in Stored Procedures
+
+SQL procedures support three types of parameters:
+
+| Parameter Type | Direction | Description |
+| :--- | :--- | :--- |
+| **`IN`** | Caller $\rightarrow$ Procedure | Passes input values. Read-only inside the procedure. (Default type) |
+| **`OUT`** | Procedure $\rightarrow$ Caller | Passes output values back to the calling environment. |
+| **`INOUT`** | Caller $\leftrightarrow$ Procedure | Acts as both an input and an output variable. |
+
+---
