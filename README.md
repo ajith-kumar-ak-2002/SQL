@@ -25,6 +25,7 @@ Inside, you will find detailed explanations, command syntaxes, and conceptual wr
 16. [Set Operations: UNION & UNION ALL](#16-set-operations-union--union-all)
 17. [SQL Views](#17-sql-views)
 18. [SQL Indexes](#18-sql-indexes)
+19. [SQL Subqueries](#19-sql-subqueries)
 
 ---
 
@@ -818,3 +819,4 @@ Removes the index to free up disk space and improve DML performance.
 ```sql
 ALTER TABLE table_name DROP INDEX index_name;
 ```
+
